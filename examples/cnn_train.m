@@ -18,7 +18,7 @@ opts.sync = true ;
 opts.prefetch = false ;
 opts.weightDecay = 0.0005 ;
 opts.momentum = 0.9 ;
-opts.errorType = 'multiclass' ;
+opts.errorType = 'lse' ;
 opts.plotDiagnostics = false ;
 opts = vl_argparse(opts, varargin) ;
 
@@ -83,7 +83,8 @@ info.val.speed = [] ;
 
 lr = 0 ;
 res = [] ;
-for epoch=1:opts.numEpochs
+% train 
+for epoch = 1 : opts.numEpochs
   prevLr = lr ;
   lr = opts.learningRate(min(epoch, numel(opts.learningRate))) ;
 
@@ -119,8 +120,9 @@ for epoch=1:opts.numEpochs
       net.layers{l}.biasesMomentum = 0 * net.layers{l}.biasesMomentum ;
     end
   end
-
-  for t=1:opts.batchSize:numel(train)
+  
+  % train on one batch
+  for t = 1 : opts.batchSize : numel(train)
     % get next image batch and labels
     batch = train(t:min(t+opts.batchSize-1, numel(train))) ;
     batch_time = tic ;
@@ -142,7 +144,7 @@ for epoch=1:opts.numEpochs
       'sync', opts.sync) ;
 
     % gradient step
-    for l=1:numel(net.layers)
+    for l = 1 : numel(net.layers)
       if ~strcmp(net.layers{l}.type, 'conv'), continue ; end
 
       net.layers{l}.filtersMomentum = ...
@@ -168,8 +170,14 @@ for epoch=1:opts.numEpochs
 
     fprintf(' %.2f s (%.1f images/s)', batch_time, speed) ;
     n = t + numel(batch) - 1 ;
-    fprintf(' err %.1f err5 %.1f', ...
-      info.train.error(end)/n*100, info.train.topFiveError(end)/n*100) ;
+    switch opts.errorType
+      case 'multiclass'
+        fprintf(' err %.1f err5 %.1f', ...
+          info.train.error(end)/n*100, ...
+          info.train.topFiveError(end)/n*100) ;
+      case 'lse'
+        fprintf(' avg err %5.4f', info.train.error(end)/n );
+    end
     fprintf('\n') ;
 
     % debug info
@@ -179,7 +187,7 @@ for epoch=1:opts.numEpochs
   end % next batch
 
   % evaluation on validation set
-  for t=1:opts.batchSize:numel(val)
+  for t = 1 : opts.batchSize : numel(val)
     batch_time = tic ;
     batch = val(t:min(t+opts.batchSize-1, numel(val))) ;
     fprintf('validation: epoch %02d: processing batch %3d of %3d ...', epoch, ...
@@ -206,10 +214,16 @@ for epoch=1:opts.numEpochs
 
     fprintf(' %.2f s (%.1f images/s)', batch_time, speed) ;
     n = t + numel(batch) - 1 ;
-    fprintf(' err %.1f err5 %.1f', ...
-      info.val.error(end)/n*100, info.val.topFiveError(end)/n*100) ;
+    switch opts.errorType
+      case 'multiclass'
+        fprintf(' err %.1f err5 %.1f', ...
+          info.val.error(end)/n*100, info.val.topFiveError(end)/n*100) ;
+      case 'lse'
+        fprintf(' err %5.4f', info.val.error(end)/n);
+    end % switch
+
     fprintf('\n') ;
-  end
+  end % for t val
 
   % save
   info.train.objective(end) = info.train.objective(end) / numel(train) ;
@@ -222,6 +236,7 @@ for epoch=1:opts.numEpochs
   info.val.speed(end) = numel(val) / info.val.speed(end) ;
   save(modelPath(epoch), 'net', 'info') ;
 
+  % (update) plot
   figure(1) ; clf ;
   subplot(1,2,1) ;
   semilogy(1:epoch, info.train.objective, 'k') ; hold on ;
@@ -243,25 +258,34 @@ for epoch=1:opts.numEpochs
       plot(1:epoch, info.train.error, 'k') ; hold on ;
       plot(1:epoch, info.val.error, 'b') ;
       h=legend('train','val') ;
-  end
-  grid on ;
-  xlabel('training epoch') ; ylabel('error') ;
-  set(h,'color','none') ;
-  title('error') ;
-  drawnow ;
-  print(1, modelFigPath, '-dpdf') ;
+    case 'lse'
+      plot(1:epoch, info.train.error, 'k') ; hold on ;
+      plot(1:epoch, info.val.error, 'b') ;
+      h=legend('train','val') ;
+  end % switch
+end % for epoch
+
+% plot
+grid on ;
+xlabel('training epoch') ; ylabel('error') ;
+set(h,'color','none') ;
+title('error') ;
+drawnow ;
+print(1, modelFigPath, '-dpdf') ;
 end
 
-% -------------------------------------------------------------------------
 function info = updateError(opts, info, net, res, speed)
-% -------------------------------------------------------------------------
+% update by one batch
+%
+
 predictions = gather(res(end-1).x) ;
 sz = size(predictions) ;
 n = prod(sz(1:2)) ;
-
 labels = net.layers{end}.class ;
+
+% objective up to now
 info.objective(end) = info.objective(end) + sum(double(gather(res(end).x))) ;
-info.speed(end) = info.speed(end) + speed ;
+% error up to now
 switch opts.errorType
   case 'multiclass'
     [~,predictions] = sort(predictions, 3, 'descend') ;
@@ -273,7 +297,10 @@ switch opts.errorType
   case 'binary'
     error = bsxfun(@times, predictions, labels) < 0 ;
     info.error(end) = info.error(end) + sum(error(:))/n ;
+  case 'lse' % the same with objective
+    info.error(end) = info.objective(end); 
 end
+% speed up to now
+info.speed(end) = info.speed(end) + speed ;
 
-
-
+end

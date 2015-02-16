@@ -14,10 +14,10 @@ opts.imdbPath = fullfile(opts.dataDir, 'imdb.mat');
 opts.cvk = 1;
 % training 
 opts.train.batchSize = 100 ;
-opts.train.numEpochs = 2 ;
+opts.train.numEpochs = 16 ;
 opts.train.continue = true ;
 opts.train.useGpu = false ;
-opts.train.learningRate = 0.001 ;
+opts.train.learningRate = [0.001*ones(1,14), 0.0012*ones(1,10)] ;
 opts.train.expDir = opts.expDir ;
 opts = vl_argparse(opts, varargin) ;
 
@@ -78,7 +78,9 @@ net.layers{end+1} = struct('type', 'conv', ...
                            'biases', zeros(1,10,'single'), ...
                            'stride', 1, ...
                            'pad', 0) ;
-net.layers{end+1} = struct('type', 'softmaxloss') ;
+net.layers{end+1} = struct('type', 'lse') ;
+% net.layers{end+1} = struct('type', 'softmaxloss') ;
+% imdb.images.labels = imdb.images.labels_old;
 
 
 %%% train with SGD
@@ -94,4 +96,4 @@ end
 
 function [im, labels] = getBatch(imdb, batch)
 im = imdb.images.data(:,:,:,batch) ;
-labels = imdb.images.labels(1,batch) ;
+labels = imdb.images.labels(:,batch) ;

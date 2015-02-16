@@ -382,6 +382,7 @@ function ext = objext()
 % architecture
 switch computer
   case 'PCWIN64', ext = 'obj';
+  case 'PCWIN', ext = 'obj';
   case {'MACI64', 'GLNXA64'}, ext = 'o' ;
   otherwise, error('Unsupported architecture %s.', computer) ;
 end

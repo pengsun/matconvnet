@@ -682,7 +682,7 @@ void mexFunction(int nout, mxArray *out[],
   /* -------------------------------------------------------------- */
 
   /* auxiliary buffers */
-
+#ifdef ENABLE_GPU
   if (hasBiases) {
     if (allOnes.memorySize < allOnesGeom.numElements * sizeof(float) ||
         (allOnes.mode == matlabGpuArray || allOnes.mode == matlabGpuArrayWrapper) != gpuMode ||
@@ -699,6 +699,24 @@ void mexFunction(int nout, mxArray *out[],
       packed_data_init_with_geom (&temp, gpuMode, tempGeom, true, false, 0);
     }
   }
+#else
+  if (hasBiases) {
+    if (allOnes.memorySize < allOnesGeom.numElements * sizeof(float) ||
+      (allOnes.mode == matlabGpuArray || allOnes.mode == matlabGpuArrayWrapper) != gpuMode) {
+        packed_data_deinit (&allOnes) ;
+        packed_data_init_with_geom (&allOnes, gpuMode, allOnesGeom, true, true, 1.0f) ;
+    }
+  }
+  if (!fullyConnectedMode) {
+    if (temp.memorySize < tempGeom.numElements * sizeof(float) ||
+      (temp.mode == matlabGpuArray || temp.mode == matlabGpuArrayWrapper) != gpuMode ) {
+        packed_data_deinit (&temp) ;
+        packed_data_init_with_geom (&temp, gpuMode, tempGeom, true, false, 0);
+    }
+  }
+#endif
+
+
   if (!backMode) {
     packed_data_init_with_geom(&output, gpuMode, outputGeom, false, false, 0) ;
   } else {

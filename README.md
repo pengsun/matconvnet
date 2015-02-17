@@ -8,11 +8,11 @@ the [homepage](http://www.vlfeat.org/matconvnet) to know more.
 
 
 ---------------------
-forked by Peng Sun and modified by personal use
+Forked by Peng Sun and modified for personal use
 
 ## TODO
- - --Least Square Loss--
- - --Code for direct CNN Testing--
+ - ~~Least Square Loss~~
+ - ~~Code for direct CNN Testing~~
 
 ## FIXME
  * Problematic when batchSize = 1 ?

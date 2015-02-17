@@ -1,4 +1,4 @@
-function [net, info] = cnn_mnist_cv5(varargin)
+function [net, info] = mnist_small_cv5_train(varargin)
 % CNN_MNIST  Demonstrated MatConNet on MNIST
 
 %%% config
@@ -13,11 +13,11 @@ opts.imdbPath = fullfile(opts.dataDir, 'imdb.mat');
 % cv partition
 opts.cvk = 1;
 % training 
-opts.train.batchSize = 100 ;
-opts.train.numEpochs = 16 ;
+opts.train.batchSize = 128 ;
+opts.train.numEpochs = 25 ;
 opts.train.continue = true ;
 opts.train.useGpu = false ;
-opts.train.learningRate = [0.001*ones(1,14), 0.0012*ones(1,10)] ;
+opts.train.learningRate = 0.001 ;
 opts.train.expDir = opts.expDir ;
 opts = vl_argparse(opts, varargin) ;
 

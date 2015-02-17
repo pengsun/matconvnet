@@ -99,6 +99,7 @@ for epoch = 1 : opts.numEpochs
     end
   end
 
+  % gurantee random batch for SGD
   train = opts.train(randperm(numel(opts.train))) ;
   val = opts.val ;
 

@@ -1,9 +1,9 @@
 function [y, res] = cnn_test_batch(net, x)
 % CNN_TEST_BATCH test just one instance or instance batch (instances)
 
-% setup toolbox
-run(fullfile(fileparts(mfilename('fullpath')), ...
-  '..', 'matlab', 'vl_setupnn.m')) ;
+% % setup toolbox
+% run(fullfile(fileparts(mfilename('fullpath')), ...
+%   '..', 'matlab', 'vl_setupnn.m')) ;
 
 % run the CNN for testing
 res = vl_simplenn(net, x, [], [], ...

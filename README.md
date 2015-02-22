@@ -23,11 +23,18 @@ dag_path.add();
 3. Done. See the directory `examples_dag` for examples.
 
 ## TODO
- - [ ] DAG/GTN implementations (wrappers)
-   - [ ] parametric transformer (conv)
-   - [ ] non-parametric transformer (pool, relu)
-   - [ ] loss transformer (lse, logit) 
- - [ ] Extension of `vl_simplenn.m` and associated files
+ - DAG/GTN implementations (wrappers)
+   - parametric transformer 
+     - [ ] convolution
+   - non-parametric transformer (pool, relu)
+     - [ ] pooling
+     - [ ] dropout
+     - [ ] relu
+     - [ ] normalization 
+   - loss transformer 
+     - [ ] LSE (Least Square Error)
+     - [ ] Logit (softmax) 
+ - Extension of `vl_simplenn.m` and associated files
    - [x] ~~Least Square Loss~~
    - [x] ~~Code for direct CNN Testing~~
 

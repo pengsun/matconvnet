@@ -11,7 +11,10 @@ instances and labels (source/root), parameters (source/root), loss
 (sink/leaf), etc; Layer/Transformer as edge, including convolutional layer, 
 pooling layer, loss layer, etc. 
 
-The Abstract Penalty (overhead for the data structure) should be negligible.
+The wrapping is in an Object Oriented way, which should be hopefully more 
+flexible and much easier to prototype your own idea by incorporating 
+customized components (i.e., Node Data or Transformers). The Abstraction 
+Penalty (overhead for the wrapping data structure) should be negligible.
 
 ## Reference
 []

@@ -16,7 +16,7 @@ Forked by Peng Sun and modified for personal use. Main purposes:
 ## Install
 1. Follow the original instructions for setup, which compiles the mex code,
    add to path the directory `./matlab`.
-2. Add the `./matlab_dag` directory to path by typing
+2. Add the `./matlab_dag` directory to path by running
 ``` matlab
 dag_path.add();
 ```

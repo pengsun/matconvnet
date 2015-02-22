@@ -8,9 +8,16 @@ the [homepage](http://www.vlfeat.org/matconvnet) to know more.
 
 
 ---------------------
-Forked by Peng Sun and modified for personal use
+Forked by Peng Sun and modified for personal use. Main purposes:
+- Directed Acyclic Graph (DAG), a.k.a. Graph Transformer Network (GTN), see
+  README.md in matlab_dag
+- Vector-Valued Regression (e.g., face pose estimate)
 
 ## TODO
+ - DAG/GTN implementation (wrapper)
+   - parametric transformer (conv, pool)
+   - non-parametric transformer (pool)
+   - loss transformer (lse) 
  - ~~Least Square Loss~~
  - ~~Code for direct CNN Testing~~
 

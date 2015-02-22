@@ -6,7 +6,7 @@ run(fullfile(fileparts(mfilename('fullpath')),...
   '..', 'matlab', 'vl_setupnn.m')) ;
 % model
 opts.moDir  = fullfile('mo_zoo','mnist_small_cv5') ;
-opts.moPath = fullfile(opts.moDir, 'net-epoch-16.mat');
+opts.moPath = fullfile(opts.moDir, 'net-epoch-2.mat');
 % data
 opts.dataDir  = fullfile('data','mnist_small_cv5') ;
 opts.imdbPath = fullfile(opts.dataDir, 'imdb.mat');

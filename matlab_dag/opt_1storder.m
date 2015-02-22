@@ -16,7 +16,7 @@ classdef opt_1storder < opt_i
     end
     
     function obj = update(obj, pa)
-      pa.a = pa.a - 0.1 * pa.d;
+      pa.a = pa.a - 0.00001 * pa.d;
     end
   end
   

@@ -4,13 +4,6 @@ clear; clc;
 dir_data = 'C:\Dev\code\matconvnet\examples\data\mnist_small_cv5';
 fn_data = fullfile(dir_data, 'imdb.mat');
 load(fn_data);
-
-% draw a batch
-batch_sz = 128;
-ind_tr = find(images.set==1);
-ind_bat = ind_tr( randsample(numel(ind_tr), batch_sz) );
-X = images.data(:,:,:, ind_bat);
-Y = images.labels(:, ind_bat);
 %% the network
 f = 1/100;
 % 1: conv, param
@@ -67,21 +60,34 @@ h.o = n_data();
 tfs{8} = h;
 %% the parameters
 % collect the parameters
-params = [tfs{1}.p(:); tfs{3}.p(:); tfs{5}.p(:); tfs{7}.p(:)];
+params = dag_util.collect_params(tfs);
 % create the corresponding numeric optimizers
-opt_arr(numel(params), 1) = opt_1storder();
+opt_arr = cellfun(@(z)(opt_1storder()), params, 'uniformoutput',false);
 %% do the training
-% set the source/root & sink/leaf data node
-tfs{1}.i.a    = X; %
-tfs{8}.i(2).a = Y; % 
-tfs{8}.o.d    = 1;
+T = 100;
+% profile on;
+for t = 1 : T
+  % draw a batch
+  batch_sz = 128;
+  ind_tr = find(images.set==1);
+  ind_bat = ind_tr( randsample(numel(ind_tr), batch_sz) );
+  X = images.data(:,:,:, ind_bat);
+  Y = images.labels(:, ind_bat);
 
-% fprop & bprop
-t_elapse = tic;
-tfs           = cellfun(@fprop, tfs,           'uniformoutput',false) ;
-tfs(end:-1:1) = cellfun(@bprop, tfs(end:-1:1), 'uniformoutput',false) ;
-t_elapse = toc(t_elapse);
-fprintf('batch time = %d\n', t_elapse);
+  % set the source/root & sink/leaf data node
+  tfs{1}.i.a    = X; %
+  tfs{8}.i(2).a = Y; % 
+  tfs{8}.o.d    = 1;
 
-% update parameters
-opt_arr = arrayfun(@update, opt_arr, params, 'uniformoutput',false);
+  % fprop & bprop
+  t_elapse = tic;
+  tfs           = cellfun(@fprop, tfs,           'uniformoutput',false) ;
+  tfs(end:-1:1) = cellfun(@bprop, tfs(end:-1:1), 'uniformoutput',false) ;
+  t_elapse = toc(t_elapse);
+  fprintf('iter %d, batch time = %.3fs, speed = %.1f images/s\n',...
+    t, t_elapse, batch_sz/t_elapse);
+
+  % update parameters
+  opt_arr = cellfun(@update, opt_arr, params, 'uniformoutput',false);
+end
+% profile off;

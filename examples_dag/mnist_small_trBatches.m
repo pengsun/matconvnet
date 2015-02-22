@@ -59,16 +59,17 @@ h.i = [tfs{7}.o, n_data()];
 h.o = n_data();
 tfs{8} = h;
 %% the parameters
-% collect the parameters
+% collect the parameters from the transformer array
 params = dag_util.collect_params(tfs);
 % create the corresponding numeric optimizers
-opt_arr = cellfun(@(z)(opt_1storder()), params, 'uniformoutput',false);
+opt_arr = dag_util.alloc_opt(params);
 %% do the training
 T = 100;
+batch_sz = 128;
+
 % profile on;
 for t = 1 : T
   % draw a batch
-  batch_sz = 128;
   ind_tr = find(images.set==1);
   ind_bat = ind_tr( randsample(numel(ind_tr), batch_sz) );
   X = images.data(:,:,:, ind_bat);
@@ -79,19 +80,21 @@ for t = 1 : T
   tfs{8}.i(2).a = Y; % 
   tfs{8}.o.d    = 1;
 
-  % timing: begin
-  t_elapse = tic;
-  
+  %%%%%%%%%%%%%%%%%%%%%%%%%%
+  t_elapsed = tic;
   % fprop & bprop
   tfs           = cellfun(@fprop, tfs,           'uniformoutput',false);
   tfs(end:-1:1) = cellfun(@bprop, tfs(end:-1:1), 'uniformoutput',false);
-
   % update parameters
-  opt_arr = cellfun(@update, opt_arr, params, 'uniformoutput',false);
+  for i = 1 : numel(opt_arr)
+    opt_arr{i}.cc.batch_sz = batch_sz;
+    opt_arr{i}.cc.iter_cnt = t;
+    opt_arr{i} = update(opt_arr{i}, params{i});
+  end
+  t_elapsed = toc(t_elapsed);
+  %%%%%%%%%%%%%%%%%%%%%%%%%%
   
-  % timing: end
-  t_elapse = toc(t_elapse);
   fprintf('iter %d, batch time = %.3fs, speed = %.1f images/s\n',...
-    t, t_elapse, batch_sz/t_elapse);
+    t, t_elapsed, batch_sz/t_elapsed);
 end
 % profile off;

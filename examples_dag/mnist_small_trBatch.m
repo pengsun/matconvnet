@@ -79,15 +79,19 @@ for t = 1 : T
   tfs{8}.i(2).a = Y; % 
   tfs{8}.o.d    = 1;
 
-  % fprop & bprop
+  % timing: begin
   t_elapse = tic;
-  tfs           = cellfun(@fprop, tfs,           'uniformoutput',false) ;
-  tfs(end:-1:1) = cellfun(@bprop, tfs(end:-1:1), 'uniformoutput',false) ;
-  t_elapse = toc(t_elapse);
-  fprintf('iter %d, batch time = %.3fs, speed = %.1f images/s\n',...
-    t, t_elapse, batch_sz/t_elapse);
+  
+  % fprop & bprop
+  tfs           = cellfun(@fprop, tfs,           'uniformoutput',false);
+  tfs(end:-1:1) = cellfun(@bprop, tfs(end:-1:1), 'uniformoutput',false);
 
   % update parameters
   opt_arr = cellfun(@update, opt_arr, params, 'uniformoutput',false);
+  
+  % timing: end
+  t_elapse = toc(t_elapse);
+  fprintf('iter %d, batch time = %.3fs, speed = %.1f images/s\n',...
+    t, t_elapse, batch_sz/t_elapse);
 end
 % profile off;

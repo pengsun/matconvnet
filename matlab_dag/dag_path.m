@@ -1,5 +1,5 @@
 classdef dag_path
-  %DAG_PATH Summary of this class goes here
+  %DAG_PATH Path Routines
   %   Detailed explanation goes here
   
   properties

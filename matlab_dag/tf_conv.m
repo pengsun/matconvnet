@@ -3,13 +3,20 @@ classdef tf_conv < tf_i
   %   Detailed explanation goes here
   
   properties
+    pad;
+    stride;
   end
   
   methods
+    function ob = tf_conv()
+      ob.pad = 0;
+      ob.stride = 1;
+    end
+    
     function ob = fprop(ob)
       w = ob.p(1).a;
       b = ob.p(2).a;
-      ob.o.a = vl_nnconv(ob.i.a, w,b, 'pad',0, 'stride',1);
+      ob.o.a = vl_nnconv(ob.i.a, w,b, 'pad',ob.pad, 'stride',ob.stride);
     end
     
     function ob = bprop(ob)      
@@ -17,7 +24,7 @@ classdef tf_conv < tf_i
       b = ob.p(2).a;
       delta = ob.o.d;
       [ob.i.d, ob.p(1).d, ob.p(2).d] = vl_nnconv(...
-        ob.i.a, w, b, delta, 'pad',0, 'stride',1);
+        ob.i.a, w, b, delta, 'pad',ob.pad, 'stride',ob.stride);
     end
     
   end

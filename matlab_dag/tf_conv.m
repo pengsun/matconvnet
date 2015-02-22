@@ -7,14 +7,17 @@ classdef tf_conv < tf_i
   
   methods
     function ob = fprop(ob)
-      ob.o.a = ob.i(1).a .* randn(1,1);
+      w = ob.p(1).a;
+      b = ob.p(2).a;
+      ob.o.a = vl_nnconv(ob.i.a, w,b, 'pad',0, 'stride',1);
     end
     
-    function ob = bprop(ob)
-      ob.i.d = ob.o.d .* randn(1,1);
-      
-      ob.p(1).d = ob.o.d .* randn(1,1);
-      ob.p(2).d = ob.o.d .* randn(1,1);
+    function ob = bprop(ob)      
+      w = ob.p(1).a;
+      b = ob.p(2).a;
+      delta = ob.o.d;
+      [ob.i.d, ob.p(1).d, ob.p(2).d] = vl_nnconv(...
+        ob.i.a, w, b, delta, 'pad',0, 'stride',1);
     end
     
   end

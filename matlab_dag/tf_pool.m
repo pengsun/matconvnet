@@ -7,14 +7,15 @@ classdef tf_pool < tf_i
   
   methods
     function ob = fprop(ob)
-      ob.o.a = ob.i.a .* randn(1,1);
-    end
+      ob.o.a = vl_nnpool(ob.i.a, [2,2],...
+        'pad',0, 'stride',2, 'method','max');
+    end % fprop
     
     function ob = bprop(ob)
-      ob.i.d = ob.o.d .* randn(1,1);
-    end
-    
-  end
+      ob.i.d = vl_nnpool(ob.i.a, [2,2], ob.o.d,...
+        'pad',0, 'stride',2, 'method','max');
+    end % bprop
+  end % methods
   
 end
 

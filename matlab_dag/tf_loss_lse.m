@@ -7,12 +7,18 @@ classdef tf_loss_lse < tf_i
   
   methods
     function ob = fprop(ob)
-      ob.o.a = ob.i(1).a .* randn(1,1);
+      pre = squeeze(ob.i(1).a);
+      tar = ob.i(2).a;
+      
+      ob.o.a = 0.5 * sum((pre - tar).^2, 1); 
     end
     
     function ob = bprop(ob)
-      ob.i(1).d = ob.o.d .* randn(1,1);
+      pre = squeeze(ob.i(1).a);
+      tar = ob.i(2).a;
       
+      ob.i(1).d = (pre - tar) .* ob.o.d;  
+      ob.i(1).d = reshape(ob.i(1).d, size(ob.i(1).a) );
     end
     
   end

@@ -1,3 +1,5 @@
+%%
+clear; clc;
 %% training data
 dir_data = 'C:\Dev\code\matconvnet\examples\data\mnist_small_cv5';
 fn_data = fullfile(dir_data, 'imdb.mat');
@@ -70,8 +72,11 @@ tfs{7}.i(2).a = Y; %
 tfs{7}.o.d    = 1;
 
 % fprop & bprop
+t_elapse = tic;
 tfs           = cellfun(@fprop, tfs,           'uniformoutput',false) ;
 tfs(end:-1:1) = cellfun(@bprop, tfs(end:-1:1), 'uniformoutput',false) ;
+t_elapse = toc(t_elapse);
+fprintf('batch time = %d\n', t_elapse);
 
 % update parameters
 opt_arr = arrayfun(@update, opt_arr, params, 'uniformoutput',false);

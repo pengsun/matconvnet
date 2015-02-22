@@ -10,16 +10,26 @@ the [homepage](http://www.vlfeat.org/matconvnet) to know more.
 ---------------------
 Forked by Peng Sun and modified for personal use. Main purposes:
 - Directed Acyclic Graph (DAG), a.k.a. Graph Transformer Network (GTN), see
-  README.md in matlab_dag
+  README.md in `./matlab_dag`
 - Vector-Valued Regression (e.g., face pose estimate)
 
+## Install
+1. Follow the original instructions for setup, which compiles the mex code,
+   add to path the directory `./matlab`.
+2. Add the `./matlab_dag` directory to path by typing
+``` matlab
+dag_path.add();
+```
+3. Done. See the directory `examples_dag` for examples.
+
 ## TODO
- - DAG/GTN implementation (wrapper)
-   - parametric transformer (conv, pool)
-   - non-parametric transformer (pool)
-   - loss transformer (lse) 
- - ~~Least Square Loss~~
- - ~~Code for direct CNN Testing~~
+ - [ ] DAG/GTN implementations (wrappers)
+   - [ ] parametric transformer (conv)
+   - [ ] non-parametric transformer (pool, relu)
+   - [ ] loss transformer (lse, logit) 
+ - [ ] Extension of `vl_simplenn.m` and associated files
+   - [x] ~~Least Square Loss~~
+   - [x] ~~Code for direct CNN Testing~~
 
 ## FIXME
- * Problematic when batchSize = 1 ?
+ - [ ] Problematic when batchSize = 1 ?

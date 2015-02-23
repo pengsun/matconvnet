@@ -8,7 +8,7 @@ wrapping we demonstrate in this directory is similar to how
 `./examples/cnn_train.m` and `./matlab/vl_simplenn.m` wrap the `vl_nnxxx` APIs. 
 
 Recommended order to read:
-1. mnist_small_trOneBatch.m: script showing how to train just one batch
-2. mnist_small_trBatches.m: script showing how to train many batches
-3. mnist_small_tr.m, convdab_lenet.m: script and wrapper class showing how
- to train with SGD 
+
+1. `mnist_small_trOneBatch.m`: script showing how to train just one batch
+2. `mnist_small_trBatches.m`: script showing how to train many batches
+3. `mnist_small_tr.m`, `convdab_lenet.m`: script and wrapper class showing how to train with SGD 

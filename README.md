@@ -8,7 +8,7 @@ the [homepage](http://www.vlfeat.org/matconvnet) to know more.
 
 
 ---------------------
-Forked by Peng Sun and modified for personal use. Main purposes:
+Forked by Peng Sun and modified for customized use. Main purposes:
 - Directed Acyclic Graph (**DAG**), a.k.a. Graph Transformer Network (**GTN**), see `./matlab_dag/README.md`
 - Vector-Valued Regression (e.g., face pose estimate)
 

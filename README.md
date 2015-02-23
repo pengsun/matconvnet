@@ -10,6 +10,8 @@ the [homepage](http://www.vlfeat.org/matconvnet) to know more.
 ---------------------
 Forked by Peng Sun and modified for customized use. Main purposes:
 - Directed Acyclic Graph (**DAG**), a.k.a. Graph Transformer Network (**GTN**), see `./matlab_dag/README.md`
+- Recurrent Network, which is no more than deep structure with shared 
+parameters across layers when unfolding
 - Vector-Valued Regression (e.g., face pose estimate)
 
 ## Install

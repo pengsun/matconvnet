@@ -8,6 +8,7 @@ classdef convdag
     num_epoch; % number of epoches
     batch_sz; % batch size
     dir_mo; % directory for models
+    L_tr; % training loss
     
     % TODO: more properties: step size, momentum...
   end
@@ -33,24 +34,21 @@ classdef convdag
     %   X: [d1,d2,...,dm, N], where N = #instances, d1,...,dm are dims
     %   Y: [K, N], where K is #dims of the labels
     %
-    
+      
       %%% initialize the dag before calling train() 
       %%% do this by calling init_dag() or load the model from file
       
       ob = prepare_train (ob);
       
       for t = ob.beg_epoch : ob.num_epoch
-        
+        % fire: train one epoch
         ob = prepare_train_one_epoch(ob, t);
-        
         ob = train_one_epoch(ob, X,Y);
+        ob = post_train_one_epoch(ob, t, size(X,4));
         
         % save the result
-        % TODO: delete the unncessary data before saving, only params are
-        % ineterested!!!
-        % TODO: save info holding training objective, errors, etc.
         fn_cur_mo = fullfile(ob.dir_mo, sprintf('dag_epoch_%d.mat',t) );
-        save(fn_cur_mo, 'ob');
+        ob = save_model (ob, fn_cur_mo);
       end % for t
       
     end % train
@@ -76,11 +74,10 @@ classdef convdag
         ob = set_node_src(ob, X_bat, Y_bat);
         ob = set_node_sink(ob);
         
-        %
-        ob = prepare_train_one_bat(ob, i_bat);
-        
         % fire: do the batch training
+        ob = prepare_train_one_bat(ob, i_bat);
         ob = train_one_bat(ob);
+        ob = post_train_one_bat(ob, i_bat);
         t_elapsed = toc(t_elapsed); %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % print 
@@ -107,16 +104,20 @@ classdef convdag
         'uniformoutput',false);
     end % train_one_bat
     
+  end % methods
+  
+  methods % auxiliary functions
     function ob = prepare_train (ob)
       
       % set context
       for i = 1 : numel( ob.tfs )
         ob.tfs{i}.cc.is_tr = true;
       end
-      % collect the parameters from the transformer array
-      ob.params = dag_util.collect_params(ob.tfs);
-      % create the corresponding numeric optimizers
-      ob.opt_arr = dag_util.alloc_opt( numel(ob.params) );
+      % the parameters and the corresponding numeric optimizers
+      if ( numel(ob.params) ~= numel(ob.tfs) ) % otherwise the
+        ob.params = dag_util.collect_params(ob.tfs);
+        ob.opt_arr = dag_util.alloc_opt( numel(ob.params) );
+      end
       %
       if ( ~exist(ob.dir_mo, 'file') ), mkdir(ob.dir_mo); end
     end % prepare_train
@@ -126,7 +127,16 @@ classdef convdag
       for i = 1 : numel(ob.opt_arr)
         ob.opt_arr{i}.cc.epoch_cnt = i_epoch;
       end % for i
+      
+      % update the loss
+      ob.L_tr(i_epoch) = 0;
     end % prepare_train_one_epoch
+    
+    function ob = post_train_one_epoch (ob, i_epoch, varargin)
+      % normalize the loss
+      N = varargin{1};
+      ob.L_tr(end) = ob.L_tr(end) ./ N; 
+    end % post_train_one_epoch
     
     function ob = prepare_train_one_bat (ob, i_bat)
       % set calling context
@@ -135,6 +145,43 @@ classdef convdag
         ob.opt_arr{i}.cc.iter_cnt = i_bat;
       end % for i
     end % prepare_train_one_bat
+    
+    function ob = post_train_one_bat (ob, i_bat)
+      % update the loss
+      LL = ob.tfs{end}.o.a;
+      ob.L_tr(end) = ob.L_tr(end) + sum(LL(:));
+    end % post_train_one_bat
+    
+    function ob = clear_im_data (ob)
+    % clear the intermediate (unnecessary) data: hidden variables .a, .d
+    % parameters .d
+      
+      % clear the input for each transformer
+      for k = 1 : numel( ob.tfs )
+        for kk = 1 : numel( ob.tfs{k}.i  )
+          ob.tfs{k}.i(kk).a = [];
+          ob.tfs{k}.i(kk).d = [];
+        end % for kk
+      end % for k
+      
+      % clear the output for last transformer
+      k = numel( ob.tfs );
+      for kk = 1 : numel( ob.tfs{k}.o  )
+        ob.tfs{k}.o(kk).a = [];
+        ob.tfs{k}.o(kk).d = [];
+      end % for kk
+      
+      % clear .d for all parameters
+      for k = 1 : numel( ob.params )
+        ob.params{k}.d = [];
+      end
+      
+    end % clear_im_data
+    
+    function ob = save_model(ob, fn)
+      ob = clear_im_data(ob);
+      save(fn, 'ob');
+    end % save_model
     
   end % methods
     

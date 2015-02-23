@@ -14,29 +14,39 @@ Forked by Peng Sun and modified for personal use. Main purposes:
 - Vector-Valued Regression (e.g., face pose estimate)
 
 ## Install
-1. Follow the original instructions for setup, which compiles the mex code,
-   add to path the directory `./matlab`.
-2. Add the `./matlab_dag` directory to path by running
+1. Follow the original instructions for setup, which would compile the mex 
+code, add to path the directory `./matlab`.
+2. Add directory `./matlab_dag` to path by running in command window the 
+following code:
 ``` matlab
 dag_path.add();
 ```
-3. Done. See the directory `examples_dag` for examples.
+or doing this mannually (e.g., File menu -> Set Path)
+
+When it is done, run the m files in directory `examples_dag` for examples.
 
 ## TODO
  - DAG/GTN implementations (wrappers)
    - parametric transformer 
-     - [ ] convolution
-   - non-parametric transformer (pool, relu)
-     - [ ] pooling
+     - [x] convolution
+   - non-parametric transformer
+     - [x] pooling
      - [ ] dropout
-     - [ ] relu
-     - [ ] normalization 
+     - [x] relu
+     - [ ] lateral normalization 
+   - non-parametric auxiliary transformer
+     - [ ] multiplex/add
+     - [ ] split/concatenate
    - loss transformer 
-     - [ ] LSE (Least Square Error)
+     - [x] LSE (Least Square Error)
      - [ ] Logit (softmax) 
+   - wrapper/example code in `examples_dag`
+     - [x] basic training
+     - [ ] training with validation
+     - [ ] A simple DAG other than the pure feed forward structure
  - Extension of `vl_simplenn.m` and associated files
-   - [x] ~~Least Square Loss~~
-   - [x] ~~Code for direct CNN Testing~~
+   - [x] Least Square Loss
+   - [x] Code for direct CNN Testing
 
 ## FIXME
  - [ ] Problematic when batchSize = 1 ?

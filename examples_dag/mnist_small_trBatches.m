@@ -62,7 +62,7 @@ tfs{8} = h;
 % collect the parameters from the transformer array
 params = dag_util.collect_params(tfs);
 % create the corresponding numeric optimizers
-opt_arr = dag_util.alloc_opt(params);
+opt_arr = dag_util.alloc_opt( numel(params) );
 %% do the training
 T = 100;
 batch_sz = 128;

@@ -13,9 +13,9 @@ methods(Static)
     end % for i
   end % collect_params
   
-  function opt_arr = alloc_opt(params)
-    opt_arr = cell(1,numel(params));
-    for i = 1 : numel(params)
+  function opt_arr = alloc_opt(Nparams)
+    opt_arr = cell(1, Nparams);
+    for i = 1 : Nparams
       opt_arr{i} = opt_1storder();
       opt_arr{i}.cc = dag_util.create_cc();
     end % for i

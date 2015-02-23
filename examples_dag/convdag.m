@@ -1,12 +1,15 @@
 classdef convdag
-  %convdag Summary of this class goes here
+  %convdag A thin wrapper for convolutional DAG
   %   Detailed explanation goes here
   
   % options
   properties
+    beg_epoch; % beggining epoch
     num_epoch; % number of epoches
     batch_sz; % batch size
     dir_mo; % directory for models
+    
+    % TODO: more properties: step size, momentum...
   end
   
   properties
@@ -17,6 +20,7 @@ classdef convdag
   
   methods
     function ob = convdag()
+      ob.beg_epoch = 1; % begining epoch
       ob.num_epoch = 5; % number of epoches
       ob.batch_sz = 128; % batch size
       ob.dir_mo = './mo_zoo/foobar'; % directory for models
@@ -31,18 +35,17 @@ classdef convdag
     %
     
       %%% prepare to training
-      % initialize: do it before calling train(:) 
-      %   ob = init_connection(ob); 
-      % or load the dag from saved file, e.g., 
-      %   load('dab_epoch_42.mat');
+      % initialize before calling train() 
       %
       % collect the parameters from the transformer array
       ob.params = dag_util.collect_params(ob.tfs);
       % create the corresponding numeric optimizers
-      ob.opt_arr = dag_util.alloc_opt(ob.params);
+      ob.opt_arr = dag_util.alloc_opt( numel(ob.params) );
+      % 
+      if ( ~exist(ob.dir_mo, 'file') ), mkdir(ob.dir_mo); end
       
       %%% train with SGD
-      for t = 1 : ob.num_epoch
+      for t = ob.beg_epoch : ob.num_epoch
         
         % set calling context
         for i = 1 : numel(ob.opt_arr)
@@ -50,12 +53,13 @@ classdef convdag
         end % for i
         
         % train one epoch
-        ob = train_one_eopch(ob, X,Y);
+        ob = train_one_epoch(ob, X,Y);
         
         % save the result
         % TODO: delete the unncessary data before saving, only params are
         % ineterested!!!
         % TODO: save info holding training objective, errors, etc.
+        fn_cur_mo = fullfile(ob.dir_mo, sprintf('dag_epoch_%d.mat',t) );
         save(fn_cur_mo, 'ob');
       end % for t
       
@@ -93,8 +97,10 @@ classdef convdag
         t_elapsed = toc(t_elapsed); %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         
         % print 
-        fprintf('batch %d of %d, time = %.3fs, speed = %.1f images/s\n',...
-          ii, hbat.num_bat,  t_elapsed, ob.batch_sz/t_elapsed);
+        fprintf('epoch %d, batch %d of %d, ',...
+          ob.opt_arr{1}.cc.epoch_cnt, ii, hbat.num_bat);
+        fprintf('time = %.3fs, speed = %.1f images/s\n',...
+          t_elapsed, ob.batch_sz/t_elapsed);
         
       end % for ii
     
@@ -110,14 +116,14 @@ classdef convdag
         'uniformoutput',false);
       
       % update parameters
-      ob.opt_arr = arrayfun(@update, ob.opt_arr, ob.params,...
+      ob.opt_arr = cellfun(@update, ob.opt_arr, ob.params,...
         'uniformoutput',false);
     end % train_one_bat
     
   end % methods
     
-  methods % need be overwritten in derived class
-    function ob = init_connection (ob)
+  methods % need be overrided in derived class
+    function ob = init_dag (ob)
       error('Call this in a derived class :)');
     end
     

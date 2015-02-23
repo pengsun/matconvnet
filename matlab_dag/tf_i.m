@@ -6,6 +6,8 @@ classdef tf_i
     p; % parameters
     i; % input variables
     o; % output variables
+    
+    cc; % calling context
   end
   
   methods

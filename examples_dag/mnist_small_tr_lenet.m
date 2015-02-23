@@ -1,7 +1,7 @@
 function mnist_small_tr_lenet()
 %% init dag: from file or from scratch
 beg_epoch = 3;
-dir_mo = 'D:\CodeWork\git\matconvnet\examples_dag\mo_zoo\mnist_small';
+dir_mo = 'D:\CodeWork\git\matconvnet\examples_dag\mo_zoo\mnist_small\lenet';
 fn_mo = fullfile(dir_mo, sprintf('dag_epoch_%d.mat', beg_epoch-1) );
 if ( exist(fn_mo, 'file') )
   h = create_dag_from_file (fn_mo);
@@ -14,12 +14,11 @@ end
 h.beg_epoch = beg_epoch;
 h.num_epoch = 5;
 h.batch_sz = 128;
-h.dir_mo = 'D:\CodeWork\git\matconvnet\examples_dag\mo_zoo\mnist_small';
+h.dir_mo = 'D:\CodeWork\git\matconvnet\examples_dag\mo_zoo\mnist_small\lenet';
 fn_data = 'D:\CodeWork\git\matconvnet\examples\data\mnist_small_cv5\imdb.mat';
 %% do the training
 [X, Y] = load_tr_data(fn_data);
 train(h, X,Y);
-
 function h = create_dag_from_scratch ()
 h = convdag_lenet();
 h = init_dag(h);

@@ -11,10 +11,14 @@ classdef tf_i
   end
   
   methods
-    function obj = fprop(obj)
+    function ob = tf_i()
+      ob.cc = dag_util.create_cc();
     end
     
-    function obj = bprop(obj)
+    function ob = fprop(ob)
+    end
+    
+    function ob = bprop(ob)
     end
     
   end

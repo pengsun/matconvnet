@@ -34,15 +34,11 @@ classdef convdag
     %   Y: [K, N], where K is #dims of the labels
     %
     
+      %%% initialize the dag before calling train() 
+      %%% do this by calling init_dag() or load the model from file
+      
       %%% prepare to training
-      % initialize before calling train() 
-      %
-      % collect the parameters from the transformer array
-      ob.params = dag_util.collect_params(ob.tfs);
-      % create the corresponding numeric optimizers
-      ob.opt_arr = dag_util.alloc_opt( numel(ob.params) );
-      % 
-      if ( ~exist(ob.dir_mo, 'file') ), mkdir(ob.dir_mo); end
+      ob = prepare_train (ob);
       
       %%% train with SGD
       for t = ob.beg_epoch : ob.num_epoch
@@ -119,6 +115,20 @@ classdef convdag
       ob.opt_arr = cellfun(@update, ob.opt_arr, ob.params,...
         'uniformoutput',false);
     end % train_one_bat
+    
+    function ob = prepare_train (ob)
+      
+      % set context
+      for i = 1 : numel( ob.tfs )
+        ob.tfs{i}.cc.is_tr = true;
+      end
+      % collect the parameters from the transformer array
+      ob.params = dag_util.collect_params(ob.tfs);
+      % create the corresponding numeric optimizers
+      ob.opt_arr = dag_util.alloc_opt( numel(ob.params) );
+      %
+      if ( ~exist(ob.dir_mo, 'file') ), mkdir(ob.dir_mo); end
+    end % prepare_train
     
   end % methods
     

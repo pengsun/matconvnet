@@ -43,6 +43,8 @@ When it is done, run the m files in directory `examples_dag` for examples.
      - [x] basic training
      - [ ] training with validation
      - [ ] A simple DAG other than the pure feed forward structure
+   - Misceallaneous
+     - [ ] GPU version
  - Extension of `vl_simplenn.m` and associated files
    - [x] Least Square Loss
    - [x] Code for direct CNN Testing

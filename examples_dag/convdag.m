@@ -37,18 +37,12 @@ classdef convdag
       %%% initialize the dag before calling train() 
       %%% do this by calling init_dag() or load the model from file
       
-      %%% prepare to training
       ob = prepare_train (ob);
       
-      %%% train with SGD
       for t = ob.beg_epoch : ob.num_epoch
         
-        % set calling context
-        for i = 1 : numel(ob.opt_arr)
-          ob.opt_arr{i}.cc.epoch_cnt = t;
-        end % for i
+        ob = prepare_train_one_epoch(ob, t);
         
-        % train one epoch
         ob = train_one_epoch(ob, X,Y);
         
         % save the result
@@ -70,11 +64,11 @@ classdef convdag
       hbat = reset(hbat, N, ob.batch_sz);
       
       % train every batch
-      for ii = 1 : hbat.num_bat
+      for i_bat = 1 : hbat.num_bat
         t_elapsed = tic; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
      
         % get batch 
-        ind = get_idx(hbat, ii);
+        ind = get_idx(hbat, i_bat);
         X_bat = X(:,:,:, ind);
         Y_bat = Y(:, ind);
         
@@ -82,11 +76,8 @@ classdef convdag
         ob = set_node_src(ob, X_bat, Y_bat);
         ob = set_node_sink(ob);
         
-        % set calling context
-        for i = 1 : numel(ob.opt_arr)
-          ob.opt_arr{i}.cc.batch_sz = ob.batch_sz;
-          ob.opt_arr{i}.cc.iter_cnt = ii;
-        end % for i
+        %
+        ob = prepare_train_one_bat(ob, i_bat);
         
         % fire: do the batch training
         ob = train_one_bat(ob);
@@ -94,7 +85,7 @@ classdef convdag
         
         % print 
         fprintf('epoch %d, batch %d of %d, ',...
-          ob.opt_arr{1}.cc.epoch_cnt, ii, hbat.num_bat);
+          ob.opt_arr{1}.cc.epoch_cnt, i_bat, hbat.num_bat);
         fprintf('time = %.3fs, speed = %.0f images/s\n',...
           t_elapsed, ob.batch_sz/t_elapsed);
         
@@ -129,6 +120,21 @@ classdef convdag
       %
       if ( ~exist(ob.dir_mo, 'file') ), mkdir(ob.dir_mo); end
     end % prepare_train
+    
+    function ob = prepare_train_one_epoch (ob, i_epoch)
+      % set calling context
+      for i = 1 : numel(ob.opt_arr)
+        ob.opt_arr{i}.cc.epoch_cnt = i_epoch;
+      end % for i
+    end % prepare_train_one_epoch
+    
+    function ob = prepare_train_one_bat (ob, i_bat)
+      % set calling context
+      for i = 1 : numel(ob.opt_arr)
+        ob.opt_arr{i}.cc.batch_sz = ob.batch_sz;
+        ob.opt_arr{i}.cc.iter_cnt = i_bat;
+      end % for i
+    end % prepare_train_one_bat
     
   end % methods
     

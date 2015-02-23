@@ -1,4 +1,5 @@
 function mnist_small_tr_lenet()
+%% put all the stuff in a static method of convdag_lenet if you like
 %% init dag: from file or from scratch
 beg_epoch = 3;
 dir_mo = 'D:\CodeWork\git\matconvnet\examples_dag\mo_zoo\mnist_small\lenet';

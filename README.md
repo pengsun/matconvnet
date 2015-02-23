@@ -18,7 +18,7 @@ code, add to path the directory `./matlab`.
 2. Add directory `./matlab_dag` to path by running in command window the 
 following code:
 ``` matlab
-dag_path.add();
+dag_setup;
 ```
 or doing this mannually (e.g., File menu -> Set Path)
 

@@ -19,9 +19,9 @@ classdef bat_gentor
     
     function ob = reset(ob, N, bat_sz)
       ob.ind_all = randperm(N);
-      ob.bat_sz = bat_sz;
+      ob.bat_sz = min(bat_sz,N);
       
-      ob.num_bat = ceil( N/bat_sz );
+      ob.num_bat = ceil( N / ob.bat_sz );
       ob.i_bat = 1;
     end % reset
     

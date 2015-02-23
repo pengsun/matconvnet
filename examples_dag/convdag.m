@@ -53,6 +53,76 @@ classdef convdag
       
     end % train
     
+    function Ypre = test (ob, X)
+      
+      % prepare
+      ob = prepare_test(ob);
+      
+      % initialize a batch generator
+      hbat = bat_gentor();
+      N = size(X, 4);
+      hbat = reset(hbat, N, ob.batch_sz);
+      
+      % test every batch
+      % What? Why divide the testing set into batches? Becuuse this would
+      % generate many printings that relieve you while you watch the screen
+      for i_bat = 1 : hbat.num_bat
+        t_elapsed = tic; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+     
+        % get batch 
+        ind = get_idx(hbat, i_bat);
+        X_bat = X(:,:,:, ind);
+        Y_bat_trash = 0; % Just making the fprop() goes. Okay with a scalar.
+        
+        % set source nodes
+        ob = set_node_src(ob, X_bat, Y_bat_trash);
+        
+        % fire: do the batch testing by calling fprop() on each transformer
+        ob.tfs = cellfun(@fprop, ob.tfs, 'uniformoutput',false);
+        
+        % fetch the results
+        Ypre_bat = ob.tfs{end}.o.a;
+        if (i_bat==1), Ypre = Ypre_bat;
+        else           Ypre = cat(2,Ypre,Ypre_bat); end
+        t_elapsed = toc(t_elapsed); %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        
+        % print 
+        fprintf('testing: epoch %d, batch %d of %d, ',...
+          ob.opt_arr{1}.cc.epoch_cnt, i_bat, hbat.num_bat);
+        fprintf('time = %.3fs, speed = %.0f images/s\n',...
+          t_elapsed, ob.batch_sz/t_elapsed);
+        
+      end % for ii
+      
+    end % test
+  end % methods
+  
+  methods % auxiliary functions for train
+    function ob = prepare_train (ob)
+      
+      % set context
+      for i = 1 : numel( ob.tfs )
+        ob.tfs{i}.cc.is_tr = true;
+      end
+      % the parameters and the corresponding numeric optimizers
+      if ( numel(ob.params) ~= numel(ob.tfs) ) % otherwise the
+        ob.params = dag_util.collect_params(ob.tfs);
+        ob.opt_arr = dag_util.alloc_opt( numel(ob.params) );
+      end
+      %
+      if ( ~exist(ob.dir_mo, 'file') ), mkdir(ob.dir_mo); end
+    end % prepare_train
+    
+    function ob = prepare_train_one_epoch (ob, i_epoch)
+      % set calling context
+      for i = 1 : numel(ob.opt_arr)
+        ob.opt_arr{i}.cc.epoch_cnt = i_epoch;
+      end % for i
+      
+      % update the loss
+      ob.L_tr(i_epoch) = 0;
+    end % prepare_train_one_epoch
+    
     function ob = train_one_epoch (ob, X,Y)
     % train one epoch
     
@@ -90,48 +160,6 @@ classdef convdag
     
     end % train_one_eporch
     
-    function ob = train_one_bat (ob)
-    % train one batch
-    
-      % fprop & bprop
-      ob.tfs           = cellfun(@fprop, ob.tfs,...
-        'uniformoutput',false);
-      ob.tfs(end:-1:1) = cellfun(@bprop, ob.tfs(end:-1:1),...
-        'uniformoutput',false);
-      
-      % update parameters
-      ob.opt_arr = cellfun(@update, ob.opt_arr, ob.params,...
-        'uniformoutput',false);
-    end % train_one_bat
-    
-  end % methods
-  
-  methods % auxiliary functions
-    function ob = prepare_train (ob)
-      
-      % set context
-      for i = 1 : numel( ob.tfs )
-        ob.tfs{i}.cc.is_tr = true;
-      end
-      % the parameters and the corresponding numeric optimizers
-      if ( numel(ob.params) ~= numel(ob.tfs) ) % otherwise the
-        ob.params = dag_util.collect_params(ob.tfs);
-        ob.opt_arr = dag_util.alloc_opt( numel(ob.params) );
-      end
-      %
-      if ( ~exist(ob.dir_mo, 'file') ), mkdir(ob.dir_mo); end
-    end % prepare_train
-    
-    function ob = prepare_train_one_epoch (ob, i_epoch)
-      % set calling context
-      for i = 1 : numel(ob.opt_arr)
-        ob.opt_arr{i}.cc.epoch_cnt = i_epoch;
-      end % for i
-      
-      % update the loss
-      ob.L_tr(i_epoch) = 0;
-    end % prepare_train_one_epoch
-    
     function ob = post_train_one_epoch (ob, i_epoch, varargin)
       % normalize the loss
       N = varargin{1};
@@ -145,6 +173,20 @@ classdef convdag
         ob.opt_arr{i}.cc.iter_cnt = i_bat;
       end % for i
     end % prepare_train_one_bat
+    
+    function ob = train_one_bat (ob)
+    % train one batch
+    
+      % fprop & bprop
+      ob.tfs           = cellfun(@fprop, ob.tfs,...
+        'uniformoutput',false);
+      ob.tfs(end:-1:1) = cellfun(@bprop, ob.tfs(end:-1:1),...
+        'uniformoutput',false);
+      
+      % update parameters
+      ob.opt_arr = cellfun(@update, ob.opt_arr, ob.params,...
+        'uniformoutput',false);
+    end % train_one_bat
     
     function ob = post_train_one_bat (ob, i_bat)
       % update the loss
@@ -182,6 +224,15 @@ classdef convdag
       ob = clear_im_data(ob);
       save(fn, 'ob');
     end % save_model
+    
+  end % methods
+  
+  methods % auxiliary functions for train
+    function ob = prepare_test(ob)
+      for i = 1 : numel(ob.tfs)
+        ob.tfs{i}.cc.is_tr = false;
+      end % for i
+    end % prepare_test
     
   end % methods
     

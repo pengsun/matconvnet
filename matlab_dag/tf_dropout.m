@@ -19,7 +19,7 @@ classdef tf_dropout < tf_i
       if ( ob.cc.is_tr ) % training stage: multiply a random mask
         [ob.o.a, ob.mask] = vl_nndropout(ob.i.a, 'rate',ob.rate);
       else % testing: multiply a scalar rate
-        [ob.o.a, ob.mask] = vl_nndropout(ob.i.a, 'rate',ob.rate);
+        ob.o.a = ob.rate .* ob.i.a;
       end
     end % fprop
     
@@ -27,7 +27,7 @@ classdef tf_dropout < tf_i
       if ( ob.cc.is_tr ) % training stage: multiply a random mask
         ob.i.d = vl_nndropout(ob.i.a, ob.o.d, 'mask',ob.mask);
       else % testing
-        ob.i.d = ob.o.d;
+        ob.i.d = ob.o.d; % ?
       end
     end % bprop
     

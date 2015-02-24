@@ -39,6 +39,21 @@ classdef bat_gentor
       idx = ob.ind_all(i_beg : i_end); 
     end % get_one_bat_ind
     
+    function idx = get_idx_orig (ob, varargin)
+      if ( isempty(varargin) )
+        ib = ob.i_bat;
+      else
+        ib = varargin{1};
+      end
+      
+      i_beg = 1 + (ib - 1) * ob.bat_sz;
+      i_end =           ib * ob.bat_sz;
+      i_end = min( i_end, numel(ob.ind_all) );
+      
+      iall = 1 : numel(ob.ind_all);
+      idx = iall(i_beg : i_end);
+    end % get_idx_orig
+    
   end
   
 end

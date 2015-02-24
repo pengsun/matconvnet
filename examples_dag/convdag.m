@@ -70,7 +70,7 @@ classdef convdag
         t_elapsed = tic; %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
      
         % get batch 
-        ind = get_idx(hbat, i_bat);
+        ind = get_idx_orig(hbat, i_bat);
         X_bat = X(:,:,:, ind);
         Y_bat_trash = 0; % Just making the fprop() goes. Okay with a scalar.
         
@@ -81,7 +81,7 @@ classdef convdag
         ob.tfs = cellfun(@fprop, ob.tfs, 'uniformoutput',false);
         
         % fetch the results
-        Ypre_bat = ob.tfs{end}.o.a;
+        Ypre_bat = squeeze( ob.tfs{end-1}.o.a );
         if (i_bat==1), Ypre = Ypre_bat;
         else           Ypre = cat(2,Ypre,Ypre_bat); end
         t_elapsed = toc(t_elapsed); %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -2,10 +2,10 @@ function mnist_small_te_all()
 
 % config 
 % TODO: add more properties here
-ep = 1 : 15;
+ep = 1 : 60;
 batch_sz = 128;
-dir_mo = 'C:\Dev\code\matconvnet\examples_dag\mo_zoo\mnist_small\lenet';
-fn_data = 'C:\Dev\code\matconvnet\examples\data\mnist_small_cv5\imdb.mat';
+dir_mo = fullfile(vl_rootnn,'\examples_dag\mo_zoo\mnist_small\lenetDropout');
+fn_data = fullfile(vl_rootnn,'\examples\data\mnist_small_cv5\imdb.mat');
 fn_mo_tmpl = 'dag_epoch_%d.mat';
 
 % load data
@@ -41,8 +41,6 @@ for i = 1 : numel(ep)
   fprintf('model: %s\n', fn_mo);
   fprintf('classification error = %d\n', err(end) );
 end
-
-% plot
 
 
 function [X,Y] = load_te_data(fn_data)

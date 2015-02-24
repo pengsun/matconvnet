@@ -32,7 +32,7 @@ When it is done, run the m files in directory `examples_dag` for examples.
      - [x] convolution
    - non-parametric transformer
      - [x] pooling
-     - [ ] dropout
+     - [x] dropout
      - [x] relu
      - [ ] lateral normalization 
    - non-parametric auxiliary transformer

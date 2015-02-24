@@ -12,3 +12,5 @@ Recommended order to read:
 1. `mnist_small_trOneBatch.m`: script showing how to train just one batch
 2. `mnist_small_trBatches.m`: script showing how to train many batches
 3. `mnist_small_tr_lenet.m`, `convdab_lenet.m`: script and wrapper class showing how to train with SGD 
+4. `mnist_small_tr_lenetDropout.m`, `mnist_small_tr_lenetDropout.m`: yet another example
+5. `mnist_small_tr_MLP.m`, `convdag_MLP.m`: example showing how to build MLP (Multi Layer Perceptron) by wrapping convnet

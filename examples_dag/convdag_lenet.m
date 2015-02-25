@@ -8,8 +8,8 @@ classdef convdag_lenet < convdag
   % override the required functions 
   methods
     function ob = init_dag (ob)
+      %%% set the sturcture
       f = 1/100;
-      
       % 1: conv, param
       h = tf_conv();
       h.i = n_data();
@@ -64,6 +64,9 @@ classdef convdag_lenet < convdag
       tfs{8} = h;
       
       ob.tfs = tfs;
+      
+      %%% init the parameters, the optimizers, etc
+      ob = prepare_train(ob);
     end
     
     function ob = set_node_src (ob, X_bat, Y_bat)

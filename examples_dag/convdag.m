@@ -31,7 +31,7 @@ classdef convdag
     function ob = train (ob, X, Y)
     % train with instance X and lables Y
     % Input:
-    %   X: [d1,d2,...,dm, N], where N = #instances, d1,...,dm are dims
+    %   X: [d1,d2,d3, N], where N = #instances, d1,...,dm are dims
     %   Y: [K, N], where K is #dims of the labels
     %
       
@@ -227,13 +227,12 @@ classdef convdag
     
   end % methods
   
-  methods % auxiliary functions for train
+  methods % auxiliary functions for test
     function ob = prepare_test(ob)
       for i = 1 : numel(ob.tfs)
         ob.tfs{i}.cc.is_tr = false;
       end % for i
     end % prepare_test
-    
   end % methods
     
   methods % need be overrided in derived class

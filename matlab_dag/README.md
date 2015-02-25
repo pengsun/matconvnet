@@ -13,8 +13,11 @@ pooling layer, loss layer, etc.
 
 The wrapping is in an Object Oriented way, which should be hopefully more 
 flexible and much easier to prototype your own idea by incorporating 
-customized components (i.e., Node Data or Transformers). The Abstraction 
-Penalty (overhead for the wrapping data structure) should be negligible.
+customized components (i.e., Node Data or Transformers). See `tfw/READEME.md` 
+for examples.
+
+Finally, the Abstraction Penalty (overhead for the wrapping data structure) should 
+be negligible.
 
 ## Reference
 []

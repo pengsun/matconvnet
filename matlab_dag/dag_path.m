@@ -10,6 +10,7 @@ classdef dag_path
       vl_setupnn();
       rp = dag_path.root();
       addpath(fullfile(rp, 'matlab_dag')) ;
+      addpath(fullfile(rp, 'matlab_dag/tfw')) ;
     end
     
     function rp = root ()

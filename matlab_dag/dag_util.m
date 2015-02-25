@@ -1,5 +1,5 @@
 classdef dag_util
-%DAG_UTIL Summary of this class goes here
+%DAG_UTIL Encapsulate Utility Functions
 %   Detailed explanation goes here
 methods(Static)
   

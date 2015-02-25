@@ -1,12 +1,22 @@
-function mnist_small_te_all()
+function [err_ep, err] =  mnist_small_te_all(varargin)
 
 % config 
 % TODO: add more properties here
-ep = 1 : 60;
-batch_sz = 128;
-dir_mo = fullfile(vl_rootnn,'\examples_dag\mo_zoo\mnist_small\lenetDropout');
-fn_data = fullfile(vl_rootnn,'\examples\data\mnist_small_cv5\imdb.mat');
-fn_mo_tmpl = 'dag_epoch_%d.mat';
+if ( nargin==0 )
+  ep = 1 : 60;
+  batch_sz = 128;
+  dir_mo = fullfile(vl_rootnn,'\examples_dag\mo_zoo\mnist_small\lenetDropout_LayerwiseLR');
+  fn_data = fullfile(vl_rootnn,'\examples\data\mnist_small_cv5\imdb.mat');
+  fn_mo_tmpl = 'dag_epoch_%d.mat';
+elseif ( nargin==5 )
+  ep = varargin{1};
+  batch_sz = varargin{2};
+  dir_mo = varargin{3};
+  fn_data = varargin{4};
+  fn_mo_tmpl = varargin{5};  
+else
+  error('Invalid arguments.');
+end
 
 % load data
 [X, Y] = load_te_data(fn_data);

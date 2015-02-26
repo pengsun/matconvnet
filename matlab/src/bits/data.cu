@@ -162,11 +162,11 @@ vl::Context::getCudaHelper()
   if (!cudaHelper) {
     cudaHelper = new CudaHelper() ;
   }
-  return *cudaHelper ;
 #else
   abort() ;
   return *cudaHelper ;
 #endif
+  return *cudaHelper ;
 }
 
 void vl::Context::clear()

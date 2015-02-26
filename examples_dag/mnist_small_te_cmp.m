@@ -1,6 +1,6 @@
 function mnist_small_te_cmp()
 %% config 1
-ep = 1 : 60;
+ep = 1 : 30;
 batch_sz = 128;
 dir_mo = fullfile(vl_rootnn,'\examples_dag\mo_zoo\mnist_small\lenetDropout');
 fn_data = fullfile(vl_rootnn,'\examples\data\mnist_small_cv5\imdb.mat');
@@ -8,9 +8,9 @@ fn_mo_tmpl = 'dag_epoch_%d.mat';
 %% test 1 
 [ep1,err1] = mnist_small_te_all(ep, batch_sz, dir_mo, fn_data, fn_mo_tmpl);
 %% config 2
-ep = 1 : 60;
+ep = 1 : 30;
 batch_sz = 128;
-dir_mo = fullfile(vl_rootnn,'\examples_dag\mo_zoo\mnist_small\lenetDropout_LayerwiseLR');
+dir_mo = fullfile(vl_rootnn,'\examples_dag\mo_zoo\mnist_small\lenetMultiRes');
 fn_data = fullfile(vl_rootnn,'\examples\data\mnist_small_cv5\imdb.mat');
 fn_mo_tmpl = 'dag_epoch_%d.mat';
 %% test 2 

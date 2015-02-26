@@ -20,9 +20,12 @@ Finally, the Abstraction Penalty (overhead for the wrapping data structure) shou
 be negligible.
 
 ## Reference
-[]
-[]
-[]
-[1] LeCun, Gradient based Learning.
-[2] Xiaoou Tang's paper?
-[3] Matlab Neural Network Toolbox
+
+
+[1]. 
+
+[2]. LeCun, Gradient based Learning
+
+[3]. Xiaoou Tang's paper?
+
+[4]. Matlab Neural Network Toolbox

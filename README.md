@@ -6,16 +6,18 @@ efficient, and can run and learn state-of-the-art CNNs. Several
 example CNNs are included to classify and encode images. Please visit
 the [homepage](http://www.vlfeat.org/matconvnet) to know more.
 
-
 ---------------------
-Forked by Peng Sun and modified for customized use. Main purposes:
+
+# Forked by Peng Sun and modified for customized use. 
+Main purposes:
+
 - Directed Acyclic Graph (**DAG**), a.k.a. Graph Transformer Network (**GTN**), see `./matlab_dag/README.md`
-- Recurrent Network, which is no more than deep structure with shared 
+- **Recurrent Network**, which is no more than deep structure with shared 
 parameters across layers when unfolding
 - Vector-Valued Regression (e.g., face pose estimate)
 
 ## Install
-1. Follow the original instructions for setup, which would compile the mex 
+1. Setup the original **MatConvNet** by following the instructions therein. for setup, which would compile the mex 
 code, add to path the directory `./matlab`.
 2. Add directory `./matlab_dag` to path by running in command window the 
 following code:
@@ -44,7 +46,7 @@ When it is done, cd to directory `examples_dag` and run the m files for examples
    - wrapper/example code in `examples_dag`
      - [x] basic training
      - [ ] training with validation
-     - [ ] A simple DAG other than the pure feed forward structure
+     - [x] A simple DAG other than the pure feed forward structure
    - Misceallaneous
      - [ ] GPU version
  - Extension of `vl_simplenn.m` and associated files

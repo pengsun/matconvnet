@@ -11,6 +11,7 @@ Recommended order to read:
 4. `mnist_small_tr_lenetDropout.m`, `mnist_small_tr_lenetDropout.m`: yet another example. The network structure is almost the same with 3 except for an extra Dropout layer.
 5. `mnist_small_tr_MLP.m`, `convdag_MLP.m`: example showing how to build MLP (Multi Layer Perceptron) by wrapping convnet
 6. `mnist_small_tr_MLP2.m`, `convdag_MLP2.m`: examples for tfw_xxx. The network structure is the same with 5.
+7. `mnist_small_tr_lenetMultiRes.m`, `convdag_lenetMultiRes.m`: examples showing the triangular connection at last layer, which is notably different with the feed forward net of list structure. See the comments in `convdag_lenetMultiRes.m` and the references therein.
 
 After training, the learned model can be tested with the following scripts:
 

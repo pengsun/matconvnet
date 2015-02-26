@@ -8,7 +8,7 @@ classdef opt_i
   
   methods
     function obj = opt_i(obj)
-      obj.cc = dag_util.create_cc();
+      obj.cc = call_cntxt();
     end
     
     function obj = update(obj, pa)

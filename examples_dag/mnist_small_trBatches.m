@@ -7,49 +7,50 @@ load(fn_data);
 %% the network
 f = 1/100;
 % 1: conv, param
-h = tf_conv(); 
-h.p(1).a = f*randn(5,5,1,20, 'single'); % kernel
-h.p(2).a = zeros(1, 20, 'single'); % bias
-tfs{1} = h;
+tfs{1}        = tf_conv(); 
+tfs{1}.p(1).a = f*randn(5,5,1,20, 'single'); % kernel
+tfs{1}.p(2).a = zeros(1, 20, 'single'); % bias
 % 2: pool
-h = tf_pool();
-h.i = tfs{1}.o; 
-tfs{2} = h;
+tfs{2}   = tf_pool();
+tfs{2}.i = tfs{1}.o; 
 % 3: conv, param
-h = tf_conv();
-h.i = tfs{2}.o;
-h.p(1).a = f*randn(5,5,20,50, 'single');
-h.p(2).a = zeros(1,50,'single');
-tfs{3} = h;
+tfs{3}        = tf_conv();
+tfs{3}.i      = tfs{2}.o;
+tfs{3}.p(1).a = f*randn(5,5,20,50, 'single');
+tfs{3}.p(2).a = zeros(1,50,'single');
 % 4: pool
-h = tf_pool();
-h.i = tfs{3}.o;
-tfs{4} = h;
+tfs{4}   = tf_pool();
+tfs{4}.i = tfs{3}.o;
 % 5: full connection, param
-h = tf_conv();
-h.i = tfs{4}.o;
-h.p(1).a = f*randn(4,4,50,500, 'single');
-h.p(2).a = zeros(1,500,'single');
-tfs{5} = h;
+tfs{5}        = tf_conv();
+tfs{5}.i      = tfs{4}.o;
+tfs{5}.p(1).a = f*randn(4,4,50,500, 'single');
+tfs{5}.p(2).a = zeros(1,500,'single');
 % 6: relu
-h = tf_relu();
-h.i = tfs{5}.o;
-tfs{6} = h;
+tfs{6}   = tf_relu();
+tfs{6}.i = tfs{5}.o;
 % 7: full connection, param
-h = tf_conv();
-h.i = tfs{6}.o;
-h.p(1).a = f*randn(1,1,500,10, 'single');
-h.p(2).a = zeros(1,10,'single');
-tfs{7} = h;
+tfs{7}        = tf_conv();
+tfs{7}.i      = tfs{6}.o;
+tfs{7}.p(1).a = f*randn(1,1,500,10, 'single');
+tfs{7}.p(2).a = zeros(1,10,'single');
 % 8: loss
-h = tf_loss_lse();
-h.i(1) = tfs{7}.o;
-tfs{8} = h;
+tfs{8}      = tf_loss_lse();
+tfs{8}.i(1) = tfs{7}.o;
 %% the parameters
 % collect the parameters from the transformer array
 params = dag_util.collect_params(tfs);
 % create the corresponding numeric optimizers
-opt_arr = dag_util.alloc_opt( numel(params) );
+opt_arr(numel(params), 1) = opt_1storder();
+% make a calling context and point all optimizers to it
+cc = call_cntxt();
+for k = 1 : numel(opt_arr)
+  opt_arr(k).cc = cc;
+end
+% .. and point all transformers to it
+for kk = 1 : numel(tfs)
+  tfs{kk}.cc = cc;
+end
 %% do the training
 T = 100;
 batch_sz = 128;
@@ -73,9 +74,9 @@ for t = 1 : T
   tfs           = cellfun(@fprop, tfs,           'uniformoutput',false);
   tfs(end:-1:1) = cellfun(@bprop, tfs(end:-1:1), 'uniformoutput',false);
   % update parameters
+  cc.iter_cnt = t;
+  cc.batch_sz = batch_sz;
   for i = 1 : numel(opt_arr)
-    opt_arr(i).cc.batch_sz = batch_sz;
-    opt_arr(i).cc.iter_cnt = t;
     opt_arr(i) = update(opt_arr(i), params(i));
   end
   t_elapsed = toc(t_elapsed);

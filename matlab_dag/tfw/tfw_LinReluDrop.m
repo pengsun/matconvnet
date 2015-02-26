@@ -13,9 +13,6 @@ classdef tfw_LinReluDrop < tfw_i
       f = 0.01;
       % 1: full connection, param
       h = tf_conv();
-      h.i = n_data();
-      h.o = n_data();
-      h.p = [n_data(), n_data()];
       h.p(1).a = f*randn(sz, 'single'); % kernel
       h.p(2).a = zeros(1, sz(end), 'single'); % bias
       ob.tfs{1} = h;
@@ -29,15 +26,20 @@ classdef tfw_LinReluDrop < tfw_i
       % 3: dropout
       h = tf_dropout();
       h.i = ob.tfs{2}.o;
-      h.o = n_data();
       ob.tfs{3} = h;
             
       %%% set the parameters
       ob.p = dag_util.collect_params( ob.tfs );
       
+      %%% set calling context
+      ob = set_cc(ob);
+      
       %%% input/output data
       ob.i = n_data();
       ob.o = n_data();
+      
+      %%% calling context
+      
     end % tfw_LinReluDrop
     
     function ob = fprop(ob)

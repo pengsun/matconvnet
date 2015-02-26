@@ -9,13 +9,13 @@ classdef convdag
     batch_sz; % batch size
     dir_mo; % directory for models
     L_tr; % training loss
-    
+    cc; % calling context
     % TODO: more properties: step size, momentum...
   end
   
   properties
     tfs; % transformer array
-    opt_arr; % numeric optimization array, one for each params{i}
+    opt_arr; % numeric optimization array, one for each params(i)
     params;  % parameters array, linked to those in tfs via handle class
   end
   
@@ -26,6 +26,7 @@ classdef convdag
       ob.batch_sz = 128; % batch size
       ob.dir_mo = './mo_zoo/foobar'; % directory for models
       
+      ob.cc = call_cntxt();
     end
     
     function ob = train (ob, X, Y)
@@ -88,7 +89,7 @@ classdef convdag
         
         % print 
         fprintf('testing: epoch %d, batch %d of %d, ',...
-          ob.opt_arr(1).cc.epoch_cnt, i_bat, hbat.num_bat);
+          ob.cc.epoch_cnt, i_bat, hbat.num_bat);
         fprintf('time = %.3fs, speed = %.0f images/s\n',...
           t_elapsed, ob.batch_sz/t_elapsed);
         
@@ -99,26 +100,33 @@ classdef convdag
   
   methods % auxiliary functions for train
     function ob = prepare_train (ob)
-      
-      % set context
-      for i = 1 : numel( ob.tfs )
-        ob.tfs{i}.cc.is_tr = true;
-      end
+
       % the parameters and the corresponding numeric optimizers
       if ( numel(ob.params) ~= numel(ob.tfs) ) % otherwise the
         ob.params = dag_util.collect_params(ob.tfs);
-        ob.opt_arr = dag_util.alloc_opt( numel(ob.params) );
+        %ob.opt_arr = dag_util.alloc_opt( numel(ob.params) );
+        ob.opt_arr = opt_1storder();
+        ob.opt_arr( numel(ob.params) ) = opt_1storder();
       end
+      
+      %%% set calling context
+      for i = 1 : numel( ob.tfs )
+        ob.tfs{i}.cc = ob.cc;
+      end
+      for k = 1 : numel(ob.opt_arr)
+        ob.opt_arr(k).cc = ob.cc;
+      end
+      % training
+      ob.cc.is_tr = true;
+      
       %
       if ( ~exist(ob.dir_mo, 'file') ), mkdir(ob.dir_mo); end
     end % prepare_train
     
     function ob = prepare_train_one_epoch (ob, i_epoch)
       % set calling context
-      for i = 1 : numel(ob.opt_arr)
-        ob.opt_arr(i).cc.epoch_cnt = i_epoch;
-      end % for i
-      
+      ob.cc.epoch_cnt = i_epoch;
+
       % update the loss
       ob.L_tr(i_epoch) = 0;
     end % prepare_train_one_epoch
@@ -152,7 +160,7 @@ classdef convdag
         
         % print 
         fprintf('epoch %d, batch %d of %d, ',...
-          ob.opt_arr(1).cc.epoch_cnt, i_bat, hbat.num_bat);
+          ob.cc.epoch_cnt, i_bat, hbat.num_bat);
         fprintf('time = %.3fs, speed = %.0f images/s\n',...
           t_elapsed, ob.batch_sz/t_elapsed);
         
@@ -168,10 +176,8 @@ classdef convdag
     
     function ob = prepare_train_one_bat (ob, i_bat)
       % set calling context
-      for i = 1 : numel(ob.opt_arr)
-        ob.opt_arr(i).cc.batch_sz = ob.batch_sz;
-        ob.opt_arr(i).cc.iter_cnt = i_bat;
-      end % for i
+      ob.cc.batch_sz = ob.batch_sz;
+      ob.cc.iter_cnt = i_bat;
     end % prepare_train_one_bat
     
     function ob = train_one_bat (ob)
@@ -218,9 +224,7 @@ classdef convdag
   
   methods % auxiliary functions for test
     function ob = prepare_test(ob)
-      for i = 1 : numel(ob.tfs)
-        ob.tfs{i}.cc.is_tr = false;
-      end % for i
+      ob.cc.is_tr = false;
     end % prepare_test
   end % methods
     

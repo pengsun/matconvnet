@@ -21,7 +21,7 @@ fn_data  = fullfile(vl_rootnn, 'examples/data/mnist_small_cv5/imdb.mat');
 lr = [0.01, 0.007, 0.003, 0.001]; %  for each of the four layers
 for i = 1 : 8
   ell = ceil(i/2);
-  h.opt_arr{i}.eta = lr(ell);
+  h.opt_arr(i).eta = lr(ell);
   % weight decay and momentum, which can also be set here, are left as
   % defaults
 end

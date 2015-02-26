@@ -12,7 +12,7 @@ classdef tf_i
   
   methods
     function ob = tf_i()
-      ob.cc = dag_util.create_cc();
+      ob.cc = call_cntxt();
     end
     
     function ob = fprop(ob)

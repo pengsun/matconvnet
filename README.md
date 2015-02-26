@@ -22,8 +22,8 @@ parameters across layers when unfolding
 following code:
 ``` matlab
 dag_path.setup;
-```
-or doing this manually (e.g., File menu -> Set Path)
+``` 
+or doing this manually (e.g., Matlab Desktop -> File menu -> Set Path)
 
 When it is done, cd to directory `examples_dag` and run the m files for examples. See `examples_dag/README.md` therein.
 
@@ -37,7 +37,7 @@ When it is done, cd to directory `examples_dag` and run the m files for examples
      - [x] relu
      - [ ] lateral normalization 
    - non-parametric auxiliary transformer
-     - [ ] multiplex/add
+     - [x] multiplex/add
      - [ ] split/concatenate
    - loss transformer 
      - [x] LSE (Least Square Error)

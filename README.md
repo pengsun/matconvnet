@@ -17,14 +17,13 @@ parameters across layers when unfolding
 - Vector-Valued Regression (e.g., face pose estimate)
 
 ## Install
-1. Setup the original **MatConvNet** by following the instructions therein. for setup, which would compile the mex 
-code, add to path the directory `./matlab`.
+1. Setup the original **MatConvNet** by following the instructions therein. This would compile the mex code, add to path the directory `./matlab`.
 2. Add directory `./matlab_dag` to path by running in command window the 
 following code:
 ``` matlab
 dag_path.setup;
 ```
-or doing this mannually (e.g., File menu -> Set Path)
+or doing this manually (e.g., File menu -> Set Path)
 
 When it is done, cd to directory `examples_dag` and run the m files for examples. See `examples_dag/README.md` therein.
 
@@ -46,8 +45,8 @@ When it is done, cd to directory `examples_dag` and run the m files for examples
    - wrapper/example code in `examples_dag`
      - [x] basic training
      - [ ] training with validation
-     - [x] A simple DAG other than the pure feed forward structure
-   - Misceallaneous
+     - [x] A simple DAG other than the pure feed forward net with list structure
+   - Miscellaneous
      - [ ] GPU version
  - Extension of `vl_simplenn.m` and associated files
    - [x] Least Square Loss

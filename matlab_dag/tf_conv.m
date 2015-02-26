@@ -15,13 +15,13 @@ classdef tf_conv < tf_i
       ob.i = n_data();
       ob.o = n_data();
       ob.p = [n_data(), n_data()];
-    end
+    end % tf_conv
     
     function ob = fprop(ob)
       w = ob.p(1).a;
       b = ob.p(2).a;
       ob.o.a = vl_nnconv(ob.i.a, w,b, 'pad',ob.pad, 'stride',ob.stride);
-    end
+    end % tf_conv
     
     function ob = bprop(ob)
       w = ob.p(1).a;
@@ -29,7 +29,7 @@ classdef tf_conv < tf_i
       delta = ob.o.d;
       [ob.i.d, ob.p(1).d, ob.p(2).d] = vl_nnconv(...
         ob.i.a, w, b, delta, 'pad',ob.pad, 'stride',ob.stride);
-    end
+    end % tf_conv
     
   end
   

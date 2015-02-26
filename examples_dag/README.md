@@ -14,3 +14,4 @@ Recommended order to read:
 3. `mnist_small_tr_lenet.m`, `convdab_lenet.m`: script and wrapper class showing how to train with SGD 
 4. `mnist_small_tr_lenetDropout.m`, `mnist_small_tr_lenetDropout.m`: yet another example
 5. `mnist_small_tr_MLP.m`, `convdag_MLP.m`: example showing how to build MLP (Multi Layer Perceptron) by wrapping convnet
+6. `mnist_small_tr_MLP2.m`, `convdag_MLP2.m`: examples for tfw_xxx. The network structure is the same with 5.

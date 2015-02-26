@@ -4,20 +4,25 @@ classdef dag_util
 methods(Static)
   
   function params = collect_params(tfs)
-    params = {};
+    params = [];
     for i = 1 : numel(tfs)
+      % empty
       if ( isempty(tfs{i}.p) ), continue; end
-      for j = 1 : numel( tfs{i}.p )
-        params{end+1} = tfs{i}.p(j); %#ok<AGROW>
-      end % for j
+      
+      % tf: fecth them
+      if ( isempty(params) )
+        params = tfs{i}.p;
+      else
+        params = [params, tfs{i}.p];
+      end
     end % for i
   end % collect_params
   
   function opt_arr = alloc_opt(Nparams)
-    opt_arr = cell(1, Nparams);
+
     for i = 1 : Nparams
-      opt_arr{i} = opt_1storder();
-      opt_arr{i}.cc = dag_util.create_cc();
+      opt_arr(i)    = opt_1storder();
+      opt_arr(i).cc = dag_util.create_cc();
     end % for i
   end % alloc_opt
   

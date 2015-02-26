@@ -1,6 +1,8 @@
 classdef tfw_LinReluDrop < tfw_i
   %TFW_LINRELUDROP Linear layer + Relu + Dropout
   %   Detailed explanation goes here
+  properties
+  end
   
   methods
     function ob = tfw_LinReluDrop(sz)
@@ -8,6 +10,7 @@ classdef tfw_LinReluDrop < tfw_i
     %  sz: [W, H, C, M]. 
     
       %%% internal connection
+      f = 0.01;
       % 1: full connection, param
       h = tf_conv();
       h.i = n_data();
@@ -28,15 +31,29 @@ classdef tfw_LinReluDrop < tfw_i
       h.i = ob.tfs{2}.o;
       h.o = n_data();
       ob.tfs{3} = h;
-      
-      %%% link the input/output of tfw to that of internal connection
-      ob.i = ob.tfs{1}.i;
-      ob.o = ob.tfs{3}.o;
-      
+            
       %%% set the parameters
       ob.p = dag_util.collect_params( ob.tfs );
+      
+      %%% input/output data
+      ob.i = n_data();
+      ob.o = n_data();
     end % tfw_LinReluDrop
-  end
+    
+    function ob = fprop(ob)
+      ob.tfs{1}.i.a = ob.i.a; % outer -> inner
+      ob.tfs = cellfun(@fprop, ob.tfs, 'uniformoutput',false);
+      ob.o.a = ob.tfs{end}.o.a; % inner -> outer
+    end % fprop
+    
+    function ob = bprop(ob)
+      ob.tfs{end}.o.d = ob.o.d; % outer -> inner
+      ob.tfs(end:-1:1) = cellfun(@bprop, ob.tfs(end:-1:1),...
+        'uniformoutput',false);
+      ob.i.d = ob.tfs{1}.i.d; % inner -> outer
+    end % bprop
+    
+  end % methods
   
 end
 

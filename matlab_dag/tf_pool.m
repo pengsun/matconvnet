@@ -15,6 +15,9 @@ classdef tf_pool < tf_i
       ob.pad = 0;
       ob.stride = 2;
       ob.method = 'max';
+      
+      ob.i = n_data();
+      ob.o = n_data();
     end
     
     function ob = fprop(ob)

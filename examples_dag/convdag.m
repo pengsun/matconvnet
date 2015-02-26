@@ -88,7 +88,7 @@ classdef convdag
         
         % print 
         fprintf('testing: epoch %d, batch %d of %d, ',...
-          ob.opt_arr{1}.cc.epoch_cnt, i_bat, hbat.num_bat);
+          ob.opt_arr(1).cc.epoch_cnt, i_bat, hbat.num_bat);
         fprintf('time = %.3fs, speed = %.0f images/s\n',...
           t_elapsed, ob.batch_sz/t_elapsed);
         
@@ -116,7 +116,7 @@ classdef convdag
     function ob = prepare_train_one_epoch (ob, i_epoch)
       % set calling context
       for i = 1 : numel(ob.opt_arr)
-        ob.opt_arr{i}.cc.epoch_cnt = i_epoch;
+        ob.opt_arr(i).cc.epoch_cnt = i_epoch;
       end % for i
       
       % update the loss
@@ -152,7 +152,7 @@ classdef convdag
         
         % print 
         fprintf('epoch %d, batch %d of %d, ',...
-          ob.opt_arr{1}.cc.epoch_cnt, i_bat, hbat.num_bat);
+          ob.opt_arr(1).cc.epoch_cnt, i_bat, hbat.num_bat);
         fprintf('time = %.3fs, speed = %.0f images/s\n',...
           t_elapsed, ob.batch_sz/t_elapsed);
         
@@ -169,8 +169,8 @@ classdef convdag
     function ob = prepare_train_one_bat (ob, i_bat)
       % set calling context
       for i = 1 : numel(ob.opt_arr)
-        ob.opt_arr{i}.cc.batch_sz = ob.batch_sz;
-        ob.opt_arr{i}.cc.iter_cnt = i_bat;
+        ob.opt_arr(i).cc.batch_sz = ob.batch_sz;
+        ob.opt_arr(i).cc.iter_cnt = i_bat;
       end % for i
     end % prepare_train_one_bat
     
@@ -184,8 +184,9 @@ classdef convdag
         'uniformoutput',false);
       
       % update parameters
-      ob.opt_arr = cellfun(@update, ob.opt_arr, ob.params,...
-        'uniformoutput',false);
+      for i = 1 : numel(ob.opt_arr)
+        ob.opt_arr(i) = update(ob.opt_arr(i), ob.params(i));
+      end
     end % train_one_bat
     
     function ob = post_train_one_bat (ob, i_bat)
@@ -215,7 +216,7 @@ classdef convdag
       
       % clear .d for all parameters
       for k = 1 : numel( ob.params )
-        ob.params{k}.d = [];
+        ob.params(k).d = [];
       end
       
     end % clear_im_data

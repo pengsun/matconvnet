@@ -11,62 +11,42 @@ classdef convdag_lenetDropout < convdag
       %%% init structure
       f = 1/100;
       % 1: conv, param
-      h = tf_conv();
-      h.i = n_data();
-      h.o = n_data();
-      h.p = [n_data(), n_data()];
-      h.p(1).a = f*randn(5,5,1,20, 'single'); % kernel
-      h.p(2).a = zeros(1, 20, 'single'); % bias
-      tfs{1} = h;
+      tfs{1}        = tf_conv();
+      tfs{1}.p(1).a = f*randn(5,5,1,20, 'single'); % kernel
+      tfs{1}.p(2).a = zeros(1, 20, 'single'); % bias
       % 2: pool
-      h = tf_pool();
-      h.i = tfs{1}.o;
-      h.o = n_data();
-      tfs{2} = h;
+      tfs{2}   = tf_pool();
+      tfs{2}.i = tfs{1}.o;
+      tfs{2}.o = n_data();
       % 3: conv, param
-      h = tf_conv();
-      h.i = tfs{2}.o;
-      h.o = n_data();
-      h.p = [n_data(), n_data()];
-      h.p(1).a = f*randn(5,5,20,50, 'single');
-      h.p(2).a = zeros(1,50,'single');
-      tfs{3} = h;
+      tfs{3}        = tf_conv();
+      tfs{3}.i      = tfs{2}.o;
+      tfs{3}.p(1).a = f*randn(5,5,20,50, 'single');
+      tfs{3}.p(2).a = zeros(1,50,'single');
       % 4: pool
-      h = tf_pool();
-      h.i = tfs{3}.o;
-      h.o = n_data();
-      tfs{4} = h;
+      tfs{4}   = tf_pool();
+      tfs{4}.i = tfs{3}.o;
       % 5: full connection, param
-      h = tf_conv();
-      h.i = tfs{4}.o;
-      h.o = n_data();
-      h.p = [n_data(), n_data()];
-      h.p(1).a = f*randn(4,4,50,500, 'single');
-      h.p(2).a = zeros(1,500,'single');
-      tfs{5} = h;
+      tfs{5}        = tf_conv();
+      tfs{5}.i      = tfs{4}.o;
+      tfs{5}.p(1).a = f*randn(4,4,50,500, 'single');
+      tfs{5}.p(2).a = zeros(1,500,'single');
       % 6: relu
-      h = tf_relu();
-      h.i = tfs{5}.o;
-      h.o = n_data();
-      tfs{6} = h;
+      tfs{6}   = tf_relu();
+      tfs{6}.i = tfs{5}.o;
+      tfs{6}.o = n_data();
       % 7: dropout
-      h = tf_dropout();
-      h.i = tfs{6}.o;
-      h.o = n_data();
-      tfs{7} = h;
+      tfs{7}   = tf_dropout();
+      tfs{7}.i = tfs{6}.o;
+      tfs{7}.o = n_data();
       % 8: full connection, param
-      h = tf_conv();
-      h.i = tfs{7}.o;
-      h.o = n_data();
-      h.p = [n_data(), n_data()];
-      h.p(1).a = f*randn(1,1,500,10, 'single');
-      h.p(2).a = zeros(1,10,'single');
-      tfs{8} = h;
+      tfs{8}        = tf_conv();
+      tfs{8}.i      = tfs{7}.o;
+      tfs{8}.p(1).a = f*randn(1,1,500,10, 'single');
+      tfs{8}.p(2).a = zeros(1,10,'single');
       % 9: loss
-      h = tf_loss_lse();
-      h.i = [tfs{8}.o, n_data()];
-      h.o = n_data();
-      tfs{9} = h;
+      tfs{9}      = tf_loss_lse();
+      tfs{9}.i(1) = tfs{8}.o;
       
       ob.tfs = tfs;
       

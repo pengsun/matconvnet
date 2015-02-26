@@ -6,6 +6,11 @@ classdef tf_loss_lse < tf_i
   end
   
   methods
+    function ob = tf_loss_lse()
+      ob.i = [n_data(), n_data()];
+      ob.o = n_data();
+    end
+    
     function ob = fprop(ob)
       pre = squeeze(ob.i(1).a);
       tar = ob.i(2).a;

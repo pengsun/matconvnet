@@ -13,6 +13,9 @@ classdef tf_dropout < tf_i
   methods
     function ob = tf_dropout ()
       ob.rate = 0.5;
+      
+      ob.i = n_data();
+      ob.o = n_data();
     end
     
     function ob = fprop(ob)

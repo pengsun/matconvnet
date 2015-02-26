@@ -11,6 +11,10 @@ classdef tf_conv < tf_i
     function ob = tf_conv()
       ob.pad = 0;
       ob.stride = 1;
+      
+      ob.i = n_data();
+      ob.o = n_data();
+      ob.p = [n_data(), n_data()];
     end
     
     function ob = fprop(ob)

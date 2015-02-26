@@ -1,8 +1,8 @@
 function mnist_small_tr_MLP2()
 %% put all the stuff in a static method of convdag_MLP if you like
 %% init dag: from file or from scratch
-beg_epoch = 1;
-dir_mo = fullfile(vl_rootnn,'\examples_dag\mo_zoo\mnist_small\MLP');
+beg_epoch = 3;
+dir_mo = fullfile(vl_rootnn,'\examples_dag\mo_zoo\mnist_small\MLP2');
 fn_mo = fullfile(dir_mo, sprintf('dag_epoch_%d.mat', beg_epoch-1) );
 if ( exist(fn_mo, 'file') )
   h = create_dag_from_file (fn_mo);

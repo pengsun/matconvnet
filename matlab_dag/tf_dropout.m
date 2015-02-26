@@ -21,7 +21,7 @@ classdef tf_dropout < tf_i
     function ob = fprop(ob)
       if ( ob.cc.is_tr ) % training stage: multiply a random mask
         [ob.o.a, ob.mask] = vl_nndropout(ob.i.a, 'rate',ob.rate);
-      else % testing: multiply a scalar rate
+      else % testing: simply let it pass
         ob.o.a = ob.i.a;
       end
     end % fprop
@@ -34,6 +34,13 @@ classdef tf_dropout < tf_i
       end
     end % bprop
     
+  end
+  
+  methods % auxiliary
+    function ob = cl_io(ob)
+      ob = cl_io@tf_i(ob);
+      ob.mask = [];
+    end % cl_io
   end
   
 end

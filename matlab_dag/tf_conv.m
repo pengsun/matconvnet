@@ -23,7 +23,7 @@ classdef tf_conv < tf_i
       ob.o.a = vl_nnconv(ob.i.a, w,b, 'pad',ob.pad, 'stride',ob.stride);
     end
     
-    function ob = bprop(ob)      
+    function ob = bprop(ob)
       w = ob.p(1).a;
       b = ob.p(2).a;
       delta = ob.o.d;

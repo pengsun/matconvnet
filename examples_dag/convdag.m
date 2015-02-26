@@ -200,19 +200,7 @@ classdef convdag
     % parameters .d
       
       % clear the input for each transformer
-      for k = 1 : numel( ob.tfs )
-        for kk = 1 : numel( ob.tfs{k}.i  )
-          ob.tfs{k}.i(kk).a = [];
-          ob.tfs{k}.i(kk).d = [];
-        end % for kk
-      end % for k
-      
-      % clear the output for last transformer
-      k = numel( ob.tfs );
-      for kk = 1 : numel( ob.tfs{k}.o  )
-        ob.tfs{k}.o(kk).a = [];
-        ob.tfs{k}.o(kk).d = [];
-      end % for kk
+      ob.tfs = cellfun(@cl_io, ob.tfs, 'uniformoutput',false);
       
       % clear .d for all parameters
       for k = 1 : numel( ob.params )

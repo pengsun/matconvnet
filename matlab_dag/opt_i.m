@@ -7,8 +7,8 @@ classdef opt_i
   end
   
   methods
-    function obj = paramopt_i(obj)
-      obj.cc = struct();
+    function obj = opt_i(obj)
+      obj.cc = dag_util.create_cc();
     end
     
     function obj = update(obj, pa)

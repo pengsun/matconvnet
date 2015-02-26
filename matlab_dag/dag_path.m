@@ -5,7 +5,14 @@ classdef dag_path
   properties
   end
   
+  methods
+  end
+  
   methods(Static)
+    function setup()
+      dag_path.add();
+    end
+    
     function add ()
       vl_setupnn();
       rp = dag_path.root();

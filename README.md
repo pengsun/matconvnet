@@ -20,11 +20,11 @@ code, add to path the directory `./matlab`.
 2. Add directory `./matlab_dag` to path by running in command window the 
 following code:
 ``` matlab
-dag_setup;
+dag_path.setup;
 ```
 or doing this mannually (e.g., File menu -> Set Path)
 
-When it is done, run the m files in directory `examples_dag` for examples.
+When it is done, cd to directory `examples_dag` and run the m files for examples. See `examples_dag/README.md` therein.
 
 ## TODO
  - DAG/GTN implementations (wrappers)

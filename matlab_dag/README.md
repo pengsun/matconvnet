@@ -2,7 +2,7 @@
 
 Directed Acyclic Graph (**DAG**) convolutional net is a kind of Graph Transformer Network (**GTN**) [1]. Examples include check reader [1], scene parser [??], pose estimation [??], multi resolution CNN by triangular connection [2, 3], Cascade Neural Network [4], etc. The feed-forward net with list data structure is a special case of DAG/GTN. The DAG/GTN was also studied in previous literature under the name of Energy Based Learning.
 
-## Design Concept
+## Design Concept: Data Structure
 The neural network is seen as a _Directed Acyclic Graph_. 
 
 This way, the _node_ represents the _data block_ including hidden variables, instances and labels, parameters, loss, etc. Typically, the instances, labels and parameters should be source/root node without any incoming edge, while the loss should be sink/leaf node without any outgoing edge. 
@@ -20,6 +20,11 @@ The _parameters_ that need be learned in training are also represented by `n_dat
 The wrapping is in an Object Oriented way, which should be hopefully more flexible and much easier to prototype your own idea by combining the the (standard or customized) data and transformers. See `tfw/READEME.md` for examples.
 
 Finally, the Abstraction Penalty (overhead for the wrapping data structure) should be negligible.
+
+## Design Concept: GPU support
+It is tempted to add to the DAG wrapper a variable indicating whether to take CPU or GPU computation. This choice might be necessary when writing low-level functions, however, it should be avoided in high-level wrapper as it might introduce many if-else for CPU or GPU and quickly make your code messy. 
+
+In this project we suggest to prepare a separate wrappers for GPU and CPU implementation, respectively. This way, the script code would be clearer. See the classes and scripts in `examples_dag`.
 
 ## Reference
 [1]. LeCun, Yann, et al. "Gradient-based learning applied to document recognition." Proceedings of the IEEE 86.11 (1998): 2278-2324.

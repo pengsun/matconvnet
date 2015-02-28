@@ -3,9 +3,9 @@ function [err_ep, err] =  mnist_small_te_all(varargin)
 % config 
 % TODO: add more properties here
 if ( nargin==0 )
-  ep = 1 : 30;
+  ep = 1 : 12;
   batch_sz = 128;
-  dir_mo = fullfile(vl_rootnn,'\examples_dag\mo_zoo\mnist_small\lenetMultiRes');
+  dir_mo = fullfile(vl_rootnn,'\examples_dag\mo_zoo\mnist_small\gpu_lenet');
   fn_data = fullfile(vl_rootnn,'\examples\data\mnist_small_cv5\imdb.mat');
   fn_mo_tmpl = 'dag_epoch_%d.mat';
 elseif ( nargin==5 )
@@ -41,6 +41,7 @@ for i = 1 : numel(ep)
  
   ob.batch_sz = batch_sz;
   Ypre = test(ob, X);
+  Ypre = gather(Ypre);
 
   % show the error
   err(1+i) = get_cls_err(Ypre, Y);

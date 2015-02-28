@@ -197,7 +197,7 @@ classdef convdag
     
     function ob = post_train_one_bat (ob, i_bat)
       % update the loss
-      LL = ob.tfs{end}.o.a;
+      LL = gather( ob.tfs{end}.o.a ); % cpu or gpu array
       ob.L_tr(end) = ob.L_tr(end) + sum(LL(:));
     end % post_train_one_bat
     

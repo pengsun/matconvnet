@@ -47,7 +47,9 @@ When it is done, cd to directory `examples_dag` and run the m files for examples
      - [ ] training with validation
      - [x] A simple DAG other than the pure feed forward net with list structure
    - Miscellaneous
-     - [ ] GPU version
+     - [x] GPU version
+     - [x] GPU examples
+     - [ ] Tighten memory for both CPU and GPU (clear data when fprop and bprop)
  - Extension of `vl_simplenn.m` and associated files
    - [x] Least Square Loss
    - [x] Code for direct CNN Testing

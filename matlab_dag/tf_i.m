@@ -35,6 +35,20 @@ classdef tf_i
         ob.o(k).d = [];
       end % for k
     end % cl_io
+    
+    function ob = cl_i_a(ob)
+    % clear .a at each input
+      for k = 1 : numel(ob.i)
+        ob.i(k).a = [];
+      end % for k
+    end % cl_i_a
+    
+    function ob = cl_o_d(ob)
+    % clear .d at each output
+      for k = 1 : numel(ob.o)
+        ob.o(k).d = [];
+      end % for k
+    end % cl_o_d
   end % methods auxiliary
   
 end

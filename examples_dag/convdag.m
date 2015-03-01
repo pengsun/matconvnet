@@ -8,15 +8,16 @@ classdef convdag
     num_epoch; % number of epoches
     batch_sz; % batch size
     dir_mo; % directory for models
-    L_tr; % training loss
-    cc; % calling context
-    % TODO: more properties: step size, momentum...
+    is_tightMem; % if tight memory?
   end
   
   properties
     tfs; % transformer array
     opt_arr; % numeric optimization array, one for each params(i)
     params;  % parameters array, linked to those in tfs via handle class
+    
+    L_tr; % training loss
+    cc; % calling context
   end
   
   methods
@@ -25,6 +26,7 @@ classdef convdag
       ob.num_epoch = 5; % number of epoches
       ob.batch_sz = 128; % batch size
       ob.dir_mo = './mo_zoo/foobar'; % directory for models
+      ob.is_tightMem = false;
       
       ob.cc = call_cntxt();
     end
@@ -123,6 +125,7 @@ classdef convdag
       if ( ~exist(ob.dir_mo, 'file') ), mkdir(ob.dir_mo); end
     end % prepare_train
     
+    %%% for training one epoch
     function ob = prepare_train_one_epoch (ob, i_epoch)
       % set calling context
       ob.cc.epoch_cnt = i_epoch;
@@ -174,6 +177,7 @@ classdef convdag
       ob.L_tr(end) = ob.L_tr(end) ./ N; 
     end % post_train_one_epoch
     
+    %%% for traing one batch
     function ob = prepare_train_one_bat (ob, i_bat)
       % set calling context
       ob.cc.batch_sz = ob.batch_sz;
@@ -184,10 +188,14 @@ classdef convdag
     % train one batch
     
       % fprop & bprop
-      ob.tfs           = cellfun(@fprop, ob.tfs,...
-        'uniformoutput',false);
-      ob.tfs(end:-1:1) = cellfun(@bprop, ob.tfs(end:-1:1),...
-        'uniformoutput',false);
+      if (ob.is_tightMem)
+        % TODO: modify it when vl_feat/matconvnet fully supports it
+        warning('Tight memory has not been fully supported by original matconvnet!');
+        ob = do_fprop_bprop(ob);
+        %ob = do_fprop_bprop_tight_mem(ob);
+      else
+        ob = do_fprop_bprop(ob);
+      end
       
       % update parameters
       for i = 1 : numel(ob.opt_arr)
@@ -195,12 +203,34 @@ classdef convdag
       end
     end % train_one_bat
     
+    function ob = do_fprop_bprop(ob)
+      ob.tfs           = cellfun(@fprop, ob.tfs,...
+        'uniformoutput',false);
+      ob.tfs(end:-1:1) = cellfun(@bprop, ob.tfs(end:-1:1),...
+        'uniformoutput',false);
+    end % do_fprop_bprop
+    
+    function ob = do_fprop_bprop_tight_mem(ob)
+      % fprop
+      for i = 1 : numel(ob.tfs)
+        ob.tfs{i} = fprop( ob.tfs{i} );
+        ob.tfs{i} = cl_i_a( ob.tfs{i} );
+      end % for i
+      
+      % bprop
+      for i = numel(ob.tfs) : -1 : 1
+        ob.tfs{i} = bprop( ob.tfs{i} );
+        ob.tfs{i} = cl_o_d( ob.tfs{i} );
+      end
+    end % do_fprop_bprop_tight_mem
+    
     function ob = post_train_one_bat (ob, i_bat)
       % update the loss
       LL = gather( ob.tfs{end}.o.a ); % cpu or gpu array
       ob.L_tr(end) = ob.L_tr(end) + sum(LL(:));
     end % post_train_one_bat
     
+    %%% for internal data management
     function ob = clear_im_data (ob)
     % clear the intermediate (unnecessary) data: hidden variables .a, .d
     % parameters .d

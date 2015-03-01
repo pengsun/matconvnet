@@ -1,4 +1,4 @@
-classdef convdag_gpu_lenet < convdag
+classdef convdag_gpu_lenet < convdag_gpu
   %CONVDAG_LENET LeNet 
   %   Detailed explanation goes here
   

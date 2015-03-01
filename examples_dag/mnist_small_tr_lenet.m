@@ -13,7 +13,7 @@ end
 %% config 
 % TODO: add more properties here
 h.beg_epoch = beg_epoch;
-h.num_epoch = 15;
+h.num_epoch = 25;
 h.batch_sz = 128;
 h.dir_mo = fullfile(vl_rootnn,'\examples_dag\mo_zoo\mnist_small\lenet');
 fn_data = fullfile(vl_rootnn,'\examples\data\mnist_small_cv5\imdb.mat');

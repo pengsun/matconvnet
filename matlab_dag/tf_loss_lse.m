@@ -25,7 +25,8 @@ classdef tf_loss_lse < tf_i
     
     function ob = bprop(ob)
       % just using the "cache"
-      ob.i(1).d = (ob.res) .* ob.o.d;  
+      %ob.i(1).d = (ob.res) .* ob.o.d;  
+      ob.i(1).d = ob.res;
       ob.i(1).d = reshape(ob.i(1).d, ob.sz );
     end % bprop
     

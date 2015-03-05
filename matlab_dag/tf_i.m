@@ -49,6 +49,16 @@ classdef tf_i
         ob.o(k).d = [];
       end % for k
     end % cl_o_d
+    
+    function ob = cl_p_d(ob) 
+      for k = 1 : numel(ob.p)
+        ob.p(k).d = [];
+      end % for k
+    end % cl_p_d
+    
+    function ob = set_cc(ob, the_cc)
+      ob.cc = the_cc;
+    end % set_cc
   end % methods auxiliary
   
 end

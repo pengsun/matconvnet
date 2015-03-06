@@ -3,9 +3,9 @@ function [err_ep, err] =  mnist_small_te_all(varargin)
 % config 
 % TODO: add more properties here
 if ( nargin==0 )
-  ep = 1 : 4;
+  ep = 1 : 100;
   batch_sz = 128;
-  dir_mo = fullfile(vl_rootnn,'\examples_dag2\mo_zoo\mnist_small\cpu_lenetDropout');
+  dir_mo = fullfile(vl_rootnn,'\examples_dag2\mo_zoo\mnist_small\gpu_lenetTriCon');
   fn_data = fullfile(vl_rootnn,'\examples\data\mnist_small_cv5\imdb.mat');
   fn_mo_tmpl = 'dag_epoch_%d.mat';
 elseif ( nargin==5 )
@@ -36,6 +36,10 @@ for i = 1 : numel(ep)
   % init dag: from file 
   fn_mo = sprintf(fn_mo_tmpl, ep(i));
   ffn_mo = fullfile(dir_mo, fn_mo);
+  if ( ~exist(ffn_mo,'file') )
+    fprintf('%s not found, break and stop.\n', ffn_mo);
+    break; 
+  end
   load(ffn_mo, 'ob');
   % get ob from here
  

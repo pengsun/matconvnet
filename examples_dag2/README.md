@@ -4,8 +4,13 @@ Demonstrate how to build the DAG/GTN network by combining the Node Data (`n_data
 the common feed forward neural network, or as complicated as the TODO. The wrapping we demonstrate in this directory is similar to how `./examples/cnn_train.m` and `./matlab/vl_simplenn.m` wrap the `vl_nnxxx` APIs. 
 
 ## Desgin Concept
-- The whoe DAG is viewed as a big transformer, derived from `tfs_i`.
+- The whole DAG is viewed as a big transformer, derived from `tfs_i`, i.e., a DAG (transformer) can be the composition of many small DAGs (transformers). 
 - Explicit CPU version or GPU version
 - The net `convdag` is thin wrapper of the DAG, managing the training and testing
 
-It is suggested that the following examples are read sequentially
+## Purposes of the Examples
+It is suggested that the following examples are read sequentially:
+
+1. `tfw_xpu_lenetDropout`, `mnist_small_tr_xpu_lenetDropout`: the "LeNet" for mnist dataset, and its caller. `xpu` means CPU or GPU version. 
+2. `tfw_xpu_lenetTriCon`, `mnist_small_xpu_lenetTriCon`: the modified "LeNet" with triangular connection at the second last layer, and its caller. `xpu` means CPU or GPU version.
+

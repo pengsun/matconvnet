@@ -11,7 +11,7 @@ classdef tfw_cpu_lenetDropout < tfw_i
     % Initialize the DAG net
     
       %%% set the connection structure
-      f = 1/100;
+      f = 1; % intentionally inappropriate ratio
       % 1: conv, param
       tfs{1}        = tf_conv();
       tfs{1}.p(1).a = f*randn(5,5,1,20, 'single'); % kernel

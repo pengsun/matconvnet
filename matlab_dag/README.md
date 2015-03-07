@@ -24,7 +24,7 @@ Finally, the Abstraction Penalty (overhead for the wrapping data structure) shou
 ## Design Concept: GPU support
 It is tempted to add to the DAG wrapper a variable indicating whether to take CPU or GPU computation. This choice might be necessary when writing low-level functions, however, it should be avoided in high-level wrapper as it might introduce many if-else for CPU or GPU and quickly make your code messy. 
 
-In this project we suggest to prepare a separate wrappers for GPU and CPU implementation, respectively. This way, the script code would be clearer. See the classes and scripts in `examples_dag`.
+In this project we suggest to prepare a separate wrappers for GPU and CPU implementation, respectively. This way, the script code would be clearer. See the classes and scripts in `examples_dag` (slightly deprecated) and `examples_dag2` (more preferred).
 
 ## Reference
 [1]. LeCun, Yann, et al. "Gradient-based learning applied to document recognition." Proceedings of the IEEE 86.11 (1998): 2278-2324.
